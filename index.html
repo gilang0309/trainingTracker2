@@ -1,1356 +1,1222 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracker Instructor v2 - GPE Training Center</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for Advanced Visual Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- PWA Manifest & iOS Support -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="GPE Tracker">
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
-            color: #0F172A;
-            min-height: 100vh;
-        }
-        .title-font {
-            font-family: 'Montserrat', sans-serif;
-        }
-        /* Custom Styling for Web & Mobile Responsiveness - Light Theme Premium */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            box-shadow: 0 10px 30px -10px rgba(0, 80, 136, 0.08);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #F1F5F9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #005088;
-            border-radius: 9999px;
-        }
-        .active-nav {
-            color: #005088 !important;
-            border-top: 3px solid #005088;
-        }
-        /* GPE Brand Color Presets */
-        .text-gpe-blue { color: #005088; }
-        .bg-gpe-blue { background-color: #005088; }
-        .border-gpe-blue { border-color: #005088; }
-        .bg-gpe-gradient {
-            background: linear-gradient(135deg, #005088 0%, #0072C6 50%, #00A3E0 100%);
-        }
-        .bg-gpe-light-gradient {
-            background: linear-gradient(135deg, #F0F7FF 0%, #E0F2FE 100%);
-        }
-    </style>
-</head>
-<body class="pb-16 md:pb-0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COIP & OPERATHINK Fuel Analytics Dashboard - PT GPE</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- html2canvas for PNG download capability -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- TOP HEADER -->
-    <header class="w-full bg-white/90 border-b border-slate-200 sticky top-0 z-40 backdrop-blur shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <!-- Logo GPE Resmi -->
-                <div class="bg-white p-1 rounded-xl h-11 w-11 flex items-center justify-center shadow-md border border-slate-100">
-                    <img src="https://lh3.googleusercontent.com/d/14Yn8XnC-F-z3_Y8f2S79W8tPz2V_7V5E" alt="Logo GPE" class="h-full w-full object-contain">
-                </div>
-                <!-- Logo TC Resmi -->
-                <div class="bg-white p-1 rounded-xl h-11 w-11 flex items-center justify-center shadow-md border border-slate-100">
-                    <img src="https://lh3.googleusercontent.com/d/1p6iO9-G37I-6l9Z9P6W-9E8V-Y7U2Z3V" alt="Logo TC" class="h-full w-full object-contain">
-                </div>
-                <div class="hidden sm:block">
-                    <h1 class="text-sm md:text-base font-black tracking-wide text-slate-800 title-font">TRACKER INSTRUCTOR</h1>
-                    <p class="text-[10px] text-blue-600 font-bold tracking-widest">PT GRAHA PRIMA ENERGI • TC DEPT</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2">
-                <span class="px-3 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-xs font-semibold hidden md:inline-flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span> Multi-Platform Web App
-                </span>
-                <span class="px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-full text-xs font-semibold flex items-center gap-1.5">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> PWA Ready
-                </span>
-                <!-- Logout Button (Shown when logged in) -->
-                <button id="btn-logout" onclick="logout()" class="hidden px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl text-xs font-bold transition flex items-center gap-1">
-                    <i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">Keluar</span>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- MAIN INTERACTIVE WORKSPACE -->
-    <main class="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 min-h-[calc(100vh-140px)] flex justify-center items-center">
-        
-        <!-- SECTION 1: LOGIN PORTAL (LIGHT THEME) -->
-        <section id="view-login" class="w-full max-w-md bg-white border border-slate-200 p-8 rounded-3xl shadow-xl space-y-6">
-            <div class="text-center space-y-2">
-                <div class="flex justify-center gap-4">
-                    <img src="https://lh3.googleusercontent.com/d/14Yn8XnC-F-z3_Y8f2S79W8tPz2V_7V5E" class="h-16 object-contain" alt="Logo GPE">
-                    <img src="https://lh3.googleusercontent.com/d/1p6iO9-G37I-6l9Z9P6W-9E8V-Y7U2Z3V" class="h-16 object-contain" alt="Logo TC">
-                </div>
-                <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight title-font">Selamat Datang</h2>
-                <p class="text-xs text-slate-500">Silakan login menggunakan kredensial PT GPE Anda</p>
-            </div>
-
-            <form id="form-login" class="space-y-4" onsubmit="handleLogin(event)">
-                <div class="space-y-1">
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Username</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-3.5 text-slate-400"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" id="username" required placeholder="Contoh: Hasim" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Password</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-3.5 text-slate-400"><i class="fa-solid fa-lock"></i></span>
-                        <input type="password" id="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-gpe-blue hover:bg-blue-800 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-blue-800/20 flex justify-center items-center gap-2">
-                    <span>Masuk Sistem</span> <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </form>
-
-            <!-- DEMO SHORTCUTS -->
-            <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-2">
-                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest block">Akses Cepat Pengujian</span>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="setCredentials('Admin', 'Admin123')" class="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg text-[10px] font-bold transition">Admin Portal</button>
-                    <button onclick="setCredentials('Hasim', 'Hasim123')" class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg text-[10px] font-bold transition">Hasim (Foreman)</button>
-                    <button onclick="setCredentials('RegenTolanda', 'Regen123')" class="px-2.5 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-lg text-[10px] font-bold transition">Regen (Supervisor)</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: KARYAWAN PORTAL WORKSPACE (LIGHT THEME) -->
-        <section id="view-karyawan" class="hidden w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            
-            <!-- SIDEBAR KARYAWAN (Desktop navigation) -->
-            <div class="md:col-span-4 bg-white border border-slate-200 p-6 rounded-3xl space-y-6 shadow-md">
-                <!-- User Profil Header -->
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-gpe-blue rounded-2xl flex items-center justify-center font-bold text-white text-lg" id="emp-avatar">
-                        H
-                    </div>
-                    <div class="max-w-[170px]">
-                        <h3 class="text-sm font-bold text-slate-800 line-clamp-1" id="emp-nama">Hasim</h3>
-                        <p class="text-[10px] text-slate-500 tracking-wider" id="emp-nik">81.0625.6203</p>
-                    </div>
-                </div>
-
-                <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 text-[10px] text-blue-700">
-                    <span class="block font-bold text-blue-600 mb-1 uppercase tracking-wide">Jabatan Resmi</span>
-                    <strong class="text-slate-800 text-xs block" id="emp-jabatan">Foreman Trainer</strong>
-                </div>
-
-                <!-- Navigation List (Desktop) -->
-                <nav class="hidden md:flex flex-col gap-1">
-                    <button onclick="switchEmpScreen('dashboard')" id="nav-d-dashboard" class="flex items-center gap-3 w-full px-4 py-3 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition">
-                        <i class="fa-solid fa-chart-pie text-gpe-blue"></i> Beranda Utama
-                    </button>
-                    <button onclick="switchEmpScreen('input')" id="nav-d-input" class="flex items-center gap-3 w-full px-4 py-3 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition">
-                        <i class="fa-solid fa-square-plus text-emerald-600"></i> Input Laporan Kerja
-                    </button>
-                    <button onclick="switchEmpScreen('history')" id="nav-d-history" class="flex items-center gap-3 w-full px-4 py-3 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition">
-                        <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Riwayat Pekerjaan
-                    </button>
-                    <button onclick="switchEmpScreen('notif')" id="nav-d-notif" class="flex items-center gap-3 w-full px-4 py-3 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition relative">
-                        <i class="fa-solid fa-bell text-blue-500"></i> Pusat Notifikasi
-                        <span id="notif-badge-desktop" class="hidden absolute right-4 top-3.5 bg-red-500 w-2 h-2 rounded-full"></span>
-                    </button>
-                    <button onclick="switchEmpScreen('flutter')" id="nav-d-flutter" class="flex items-center gap-3 w-full px-4 py-3 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition">
-                        <i class="fa-brands fa-flutter text-cyan-600"></i> Flutter Code Hub
-                    </button>
-                </nav>
-            </div>
-
-            <!-- WORKSPACE KANAN DYNAMIC -->
-            <div class="md:col-span-8 space-y-6">
-                
-                <!-- DYNAMIC SCREEN: DASHBOARD -->
-                <div id="emp-screen-dashboard" class="space-y-6">
-                    <h2 class="text-xl font-bold text-slate-800 title-font flex items-center gap-2"><i class="fa-solid fa-chart-pie text-gpe-blue"></i> Metrik Kinerja Instruktur</h2>
-                    
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-sm">
-                            <span class="text-[10px] text-slate-500 block mb-1 uppercase font-semibold">Total Jam</span>
-                            <span class="text-2xl font-black text-gpe-blue" id="stat-total-jam">0h</span>
-                        </div>
-                        <div class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-sm">
-                            <span class="text-[10px] text-slate-500 block mb-1 uppercase font-semibold">Disetujui</span>
-                            <span class="text-2xl font-black text-emerald-600" id="stat-disetujui">0</span>
-                        </div>
-                        <div class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-sm">
-                            <span class="text-[10px] text-slate-500 block mb-1 uppercase font-semibold">Pending</span>
-                            <span class="text-2xl font-black text-amber-600" id="stat-pending">0</span>
-                        </div>
-                    </div>
-
-                    <!-- target planning box -->
-                    <div class="bg-white border border-slate-200 p-5 rounded-3xl space-y-3 shadow-md">
-                        <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-calendar-day text-gpe-blue"></i> Rencana Penugasan Hari Ini</h4>
-                            <span class="text-[9px] bg-blue-50 text-blue-600 px-2 py-0.5 border border-blue-200 rounded font-bold uppercase">PLANNING</span>
-                        </div>
-                        <div id="dashboard-planning-container" class="space-y-2">
-                            <!-- Injected by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DYNAMIC SCREEN: FORM INPUT -->
-                <div id="emp-screen-input" class="hidden space-y-4">
-                    <h2 class="text-xl font-bold text-slate-800 title-font flex items-center gap-2"><i class="fa-solid fa-square-plus text-emerald-600"></i> Form Laporan Harian</h2>
-                    
-                    <form id="form-laporan-harian" class="space-y-4 bg-white border border-slate-200 p-6 rounded-3xl shadow-md" onsubmit="submitLaporanHarian(event)">
-                        <!-- Searchable activity codes dropdown -->
-                        <div class="space-y-1 relative">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Cari Kode Activity <span class="text-gpe-blue">*</span></label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-3.5 text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                <input type="text" id="search-activity" onkeyup="filterActivities(this.value)" placeholder="Ketik Kode atau Aktivitas (Misal: 021)..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/15 focus:border-blue-500 transition">
-                            </div>
-                            <!-- dropdown list matches -->
-                            <div id="search-results-dropdown" class="hidden absolute left-0 right-0 top-16 bg-white border border-slate-200 rounded-xl max-h-48 overflow-y-auto divide-y divide-slate-100 shadow-xl z-50 custom-scrollbar"></div>
-                        </div>
-
-                        <!-- Info Lock Panel (Zero Human Error) -->
-                        <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 space-y-1">
-                            <span class="text-[9px] text-blue-700 font-extrabold block tracking-wider uppercase"><i class="fa-solid fa-lock text-blue-500 mr-1"></i> Data Identitas Dikunci (Auto-Lock)</span>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs text-slate-600">
-                                <div>Karyawan: <strong class="text-slate-800" id="lock-nama">-</strong></div>
-                                <div>NIK: <strong class="text-slate-800" id="lock-nik">-</strong></div>
-                                <div>Posisi: <strong class="text-slate-800" id="lock-jabatan">-</strong></div>
-                            </div>
-                        </div>
-
-                        <!-- Date & Location -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="space-y-1">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal Activity</label>
-                                <input type="date" id="form-date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition">
-                            </div>
-                            <div class="space-y-1">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Lokasi Kerja</label>
-                                <select id="form-lokasi" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition">
-                                    <!-- Injected by JS -->
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Hours, Vol, Status -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div class="space-y-1">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Hours Pekerjaan</label>
-                                <input type="number" id="form-hours" required min="1" max="24" placeholder="Contoh: 8" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition">
-                            </div>
-                            <div class="space-y-1">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Jumlah (Volume)</label>
-                                <input type="number" id="form-jumlah" required min="1" placeholder="Contoh: 3" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition">
-                            </div>
-                            <div class="space-y-1">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Status Pekerjaan</label>
-                                <select id="form-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition">
-                                    <option value="Closed">Closed</option>
-                                    <option value="Open">Open</option>
-                                    <option value="Not Implemented">Not Implemented</option>
-                                    <option value="Replacement Task">Replacement Task</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Remarks Text Area -->
-                        <div class="space-y-1">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Remarks / Catatan & Daftar Peserta</label>
-                            <textarea id="form-remarks" required rows="4" placeholder="Daftar Peserta:\n1. MUKSIN\n\nMateri:\nReview pengoperasian..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition"></textarea>
-                        </div>
-
-                        <button type="submit" class="w-full bg-gpe-blue hover:bg-blue-800 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-blue-500/10">
-                            KIRIM LAPORAN KERJA AKTUAL
-                        </button>
-                    </form>
-                </div>
-
-                <!-- DYNAMIC SCREEN: REPORT HISTORY -->
-                <div id="emp-screen-history" class="hidden space-y-4">
-                    <h2 class="text-xl font-bold text-slate-800 title-font flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Riwayat Pekerjaan Anda</h2>
-                    <div id="history-container" class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
-                        <!-- Injected by JS -->
-                    </div>
-                </div>
-
-                <!-- DYNAMIC SCREEN: NOTIFICATIONS -->
-                <div id="emp-screen-notif" class="hidden space-y-4">
-                    <h2 class="text-xl font-bold text-slate-800 title-font flex items-center gap-2"><i class="fa-solid fa-bell text-blue-500"></i> Pusat Notifikasi</h2>
-                    <div id="notifications-container" class="space-y-3">
-                        <!-- Injected by JS -->
-                    </div>
-                </div>
-
-                <!-- DYNAMIC SCREEN: FLUTTER EXPORT HUB -->
-                <div id="emp-screen-flutter" class="hidden space-y-4">
-                    <h2 class="text-xl font-bold text-slate-800 title-font flex items-center gap-2"><i class="fa-brands fa-flutter text-cyan-500"></i> Flutter Code Hub</h2>
-                    <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="text-sm font-bold text-slate-800">Production Code (Light Mode Theme)</h3>
-                                <p class="text-[10px] text-slate-500">Salin berkas ini langsung ke file main.dart proyek Flutter Anda.</p>
-                            </div>
-                            <button onclick="copyFlutterCode()" class="px-4 py-2 bg-gpe-blue hover:bg-blue-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-md">
-                                <i class="fa-solid fa-copy"></i> Salin Code
-                            </button>
-                        </div>
-                        <div class="bg-slate-950 rounded-2xl overflow-hidden border border-slate-800">
-                            <textarea id="flutter-code-box" rows="12" class="w-full p-4 bg-slate-950 text-emerald-400 font-mono text-[11px] focus:outline-none resize-none" readonly>
-// Salin Kode Flutter Di Bawah Ini
-                            </textarea>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SECTION 3: ADMINISTRATOR PORTAL SYSTEM (LIGHT THEME) -->
-        <section id="view-admin" class="hidden w-full max-w-5xl space-y-6">
-            
-            <!-- ADMIN HEADER METRICS CARD -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-md">
-                    <span class="text-[10px] text-slate-500 block uppercase font-bold mb-1">Pending Validasi</span>
-                    <span id="adm-metric-pending" class="text-2xl font-black text-amber-600">0 Doc</span>
-                </div>
-                <div class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-md">
-                    <span class="text-[10px] text-slate-500 block uppercase font-bold mb-1">Total Jam Kerja</span>
-                    <span id="adm-metric-jam" class="text-2xl font-black text-gpe-blue">0h</span>
-                </div>
-                <div class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-md">
-                    <span class="text-[10px] text-slate-500 block uppercase font-bold mb-1">Pekerjaan Closed</span>
-                    <span id="adm-metric-closed" class="text-2xl font-black text-emerald-600">0</span>
-                </div>
-                <div class="bg-white border border-slate-200 p-4 rounded-2xl text-center shadow-md">
-                    <span class="text-[10px] text-slate-500 block uppercase font-bold mb-1">Target Tercapai</span>
-                    <span id="adm-metric-pencapaian" class="text-2xl font-black text-blue-600">0%</span>
-                </div>
-            </div>
-
-            <!-- ADMIN FILTER PANEL & EXPORT REPORT BAR -->
-            <div class="bg-white border border-slate-200 p-5 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md">
-                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                    <div class="w-full sm:w-48">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Saring Instruktur</label>
-                        <select id="admin-filter-trainer" onchange="applyAdminFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-blue-500">
-                            <!-- Injected by JS -->
-                        </select>
-                    </div>
-                    <div class="w-full sm:w-48">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Rentang Waktu</label>
-                        <select id="admin-filter-date" onchange="applyAdminFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-blue-500">
-                            <option value="Semua">Semua Waktu</option>
-                            <option value="Minggu Ini">Minggu Ini</option>
-                            <option value="Bulan Ini">Bulan Ini</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Export Document Buttons -->
-                <div class="flex gap-2 w-full md:w-auto">
-                    <button onclick="exportDoc('Excel')" class="flex-grow md:flex-grow-0 px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
-                        <i class="fa-regular fa-file-excel"></i> Ekspor Excel
-                    </button>
-                    <button onclick="exportDoc('PDF')" class="flex-grow md:flex-grow-0 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
-                        <i class="fa-regular fa-file-pdf"></i> Ekspor PDF
-                    </button>
-                </div>
-            </div>
-
-            <!-- TABBED SYSTEM FOR ADMINISTRATOR VIEW -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                
-                <!-- LEFT BLOCK: CHART & LIST VERIFIKASI (8 cols) -->
-                <div class="lg:col-span-8 space-y-6">
-                    <!-- Analytics Chart Card -->
-                    <div class="bg-white border border-slate-200 p-6 rounded-3xl space-y-4 shadow-md">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-chart-simple text-gpe-blue"></i> Visualisasi Performa Kerja Karyawan</h3>
-                            <span class="text-[9px] text-slate-500 font-mono">Real-time Analytics</span>
-                        </div>
-                        <div class="h-64">
-                            <canvas id="adminPerformanceChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Laporan Pending Verification List -->
-                    <div class="bg-white border border-slate-200 p-6 rounded-3xl space-y-4 shadow-md">
-                        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-signature text-gpe-blue"></i> Validasi Laporan Menunggu Persetujuan</h3>
-                        <div id="admin-pending-verification-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                            <!-- Injected by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RIGHT BLOCK: PENUGASAN PLANNING (4 cols) -->
-                <div class="lg:col-span-4 bg-white border border-slate-200 p-6 rounded-3xl space-y-4 shadow-md">
-                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-calendar-plus text-gpe-blue"></i> Input Planning Kerja</h3>
-                    
-                    <form id="form-planning" class="space-y-3" onsubmit="submitPlanning(event)">
-                        <div class="space-y-1">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Karyawan</label>
-                            <select id="plan-username" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs text-slate-800 focus:outline-none focus:border-blue-500">
-                                <!-- Injected by JS -->
-                            </select>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tanggal Kerja</label>
-                            <input type="date" id="plan-date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Aktivitas Kerja</label>
-                            <input type="text" id="plan-aktivitas" required placeholder="Contoh: Coaching Operator" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Durasi Jam (Hours)</label>
-                            <input type="number" id="plan-hours" required min="1" max="24" placeholder="Contoh: 8" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500">
-                        </div>
-
-                        <button type="submit" class="w-full bg-gpe-blue hover:bg-blue-800 text-white font-bold py-3 rounded-xl text-xs transition shadow-lg shadow-blue-500/20">
-                            Simpan Target Rencana Kerja
-                        </button>
-                    </form>
-
-                    <!-- List Planning Terjadwal -->
-                    <div class="pt-4 border-t border-slate-100 space-y-2">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Daftar Rencana Terjadwal</span>
-                        <div id="admin-planning-list" class="space-y-2 max-h-[180px] overflow-y-auto custom-scrollbar">
-                            <!-- Injected by JS -->
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <!-- MOBILE BOTTOM NAVIGATION -->
-    <nav id="mobile-nav-bar" class="hidden md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-2.5 grid grid-cols-5 gap-1 text-center z-40 shadow-lg">
-        <button onclick="switchEmpScreen('dashboard')" id="nav-m-dashboard" class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-800 transition">
-            <i class="fa-solid fa-chart-pie text-base mb-1"></i>
-            <span class="text-[9px]">Beranda</span>
-        </button>
-        <button onclick="switchEmpScreen('input')" id="nav-m-input" class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-800 transition">
-            <i class="fa-solid fa-square-plus text-base mb-1"></i>
-            <span class="text-[9px]">Input</span>
-        </button>
-        <button onclick="switchEmpScreen('history')" id="nav-m-history" class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-800 transition">
-            <i class="fa-solid fa-clock-rotate-left text-base mb-1"></i>
-            <span class="text-[9px]">Riwayat</span>
-        </button>
-        <button onclick="switchEmpScreen('notif')" id="nav-m-notif" class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-800 transition relative">
-            <i class="fa-solid fa-bell text-base mb-1"></i>
-            <span class="text-[9px]">Notif</span>
-            <span id="notif-badge-mobile" class="hidden absolute right-6 top-1 bg-red-500 w-1.5 h-1.5 rounded-full"></span>
-        </button>
-        <button onclick="switchEmpScreen('flutter')" id="nav-m-flutter" class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-800 transition">
-            <i class="fa-brands fa-flutter text-base mb-1"></i>
-            <span class="text-[9px]">Flutter</span>
-        </button>
-    </nav>
-
-    <!-- CUSTOM TOAST -->
-    <div id="gpe-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-white border border-slate-200 text-slate-800 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3">
-        <div class="bg-blue-50 text-gpe-blue p-2 rounded-xl">
-            <i id="toast-icon" class="fa-solid fa-check"></i>
-        </div>
-        <div>
-            <h4 id="toast-title" class="font-bold text-xs">Sistem Notifikasi</h4>
-            <p id="toast-msg" class="text-[10px] text-slate-500">Pesan sistem...</p>
-        </div>
-    </div>
-
-    <!-- WHATSAPP EXPORTER DIALOG MODAL -->
-    <div id="wa-export-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div class="flex items-center gap-2 text-emerald-600">
-                <i class="fa-brands fa-whatsapp text-2xl"></i>
-                <h3 class="font-extrabold text-sm title-font text-slate-800">Daily WhatsApp Generated!</h3>
-            </div>
-            <p class="text-[11px] text-slate-500">Salin draf di bawah, lalu langsung bagikan ke grup WhatsApp operasional GPE.</p>
-            
-            <textarea id="wa-copy-area" rows="8" class="w-full bg-slate-50 border border-slate-200 p-3.5 rounded-2xl text-[10px] text-slate-700 font-mono focus:outline-none resize-none leading-relaxed" readonly></textarea>
-            
-            <div class="flex gap-2 pt-2">
-                <button onclick="executeCopyWA()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-black py-2.5 rounded-xl text-xs flex justify-center items-center gap-1.5 transition shadow-sm">
-                    <i class="fa-solid fa-copy"></i> Salin Teks
-                </button>
-                <button onclick="closeWAModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold transition">
-                    Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SIMULATED EXPORT MODAL -->
-    <div id="export-preview-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
-                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-file-arrow-down text-emerald-600"></i> Ekspor Dokumen Berhasil
-                </h3>
-                <button onclick="closeExportModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="export-meta-container" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-700 font-mono space-y-3">
-                <!-- Injected dynamically -->
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeExportModal()" class="px-4 py-2.5 bg-gpe-blue hover:bg-blue-800 text-white font-bold rounded-xl text-xs transition">
-                    OK, Mengerti
-                </button>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- =========================================================================
-    JAVASCRIPT: LOGIC STATE & DATABASE MANAGEMENT
-    ========================================================================= -->
-    <script>
-        // 1. DATA DATABASE KARYAWAN (Tabel Baru Sesuai Excel GPE)
-        const KARYAWAN_DB = {
-            "Helbin": { nama: "Helbin P.S", nik: "81.0124.3832", jabatan: "Supervisor Trainer" },
-            "RegenTolanda": { nama: "Regen Tolanda", nik: "22.0512.436", jabatan: "Supervisor Trainer" },
-            "Basri": { nama: "Basri", nik: "15.0224.387", jabatan: "Supervisor Trainer" },
-            "IndraSyahpura": { nama: "Indra syahpura", nik: "81.0924.4689", jabatan: "Supervisor Trainer" },
-            "Asep": { nama: "Asep Setyabudi Hanora", nik: "81.0924.4666", jabatan: "Supervisor Trainer" },
-            "CaturHerdian": { nama: "Catur Herdian Joko Lelono", nik: "81.0125.5364", jabatan: "Foreman Trainer" },
-            "RickiSupriyanto": { nama: "Ricki Supriyanto", nik: "81.0225.5658", jabatan: "Foreman Trainer" },
-            "Hasim": { nama: "Hasim", nik: "81.0625.6203", jabatan: "Foreman Trainer" },
-            "DhimasMaychel": { nama: "Dhimas Maychel", nik: "81.0625.6242", jabatan: "Foreman Trainer" },
-            "DemmaMassolo": { nama: "Demma Massolo", nik: "82.0122.1885", jabatan: "Junior Trainer" },
-            "Juni": { nama: "Juni", nik: "82.0620.1002", jabatan: "Junior Trainer" },
-            "DidikSetiawan": { nama: "Didik Setiawan", nik: "82.0722.2203", jabatan: "Junior Trainer" }
-        };
-
-        // 9 Lokasi Kerja Utama GPE
-        const lokasiKerjaList = [
-            "BCM Selatan", "BCM Utara", "Workshop", "Office KM 33", 
-            "Mini Office JO", "Rental Selatan", "Rental Utara", 
-            "JO Utara", "Office TC GAM KM 12"
-        ];
-
-        // 99 Master Kode Activity Training Center
-        const ACTIVITY_LIST = [
-            { no: "001", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Cuti Periodik" },
-            { no: "002", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Cuti Tahunan" },
-            { no: "003", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Cuti Emergency" },
-            { no: "004", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Cuti Gajah" },
-            { no: "005", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Off" },
-            { no: "006", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Ijin" },
-            { no: "007", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Sakit" },
-            { no: "008", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Alpha" },
-            { no: "009", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Kondisi Khusus" },
-            { no: "010", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Stand By" },
-            { no: "011", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Medical Check Up" },
-            { no: "012", kategori: "Absent", kode: "ABS", aktivitas: "Absent", desc: "Follow Up MCU" },
-            { no: "020", kategori: "Development", kode: "DEV", aktivitas: "Instructor Formal Development", desc: "Inclass Training Development" },
-            { no: "021", kategori: "Development", kode: "DEV", aktivitas: "Instructor Formal Development", desc: "Practical Training Development" },
-            { no: "022", kategori: "Development", kode: "DEV", aktivitas: "Instructor Formal Development", desc: "Tes Praktek Simper Instruktur" },
-            { no: "023", kategori: "Development", kode: "DEV", aktivitas: "Instructor Formal Development", desc: "Instruktur Assesment" },
-            { no: "024", kategori: "Development", kode: "DEV", aktivitas: "Instructor Formal Development", desc: "Sit-in Instruktur" },
-            { no: "025", kategori: "Development", kode: "DEV", aktivitas: "Instructor Informal Development", desc: "Mentor Inclass" },
-            { no: "026", kategori: "Development", kode: "DEV", aktivitas: "Instructor Informal Development", desc: "Mentor Practical" },
-            { no: "027", kategori: "Development", kode: "DEV", aktivitas: "Instructor Informal Development", desc: "Coaching Underlines" },
-            { no: "028", kategori: "Development", kode: "DEV", aktivitas: "Instructor Informal Development", desc: "Knowledge Sharing" },
-            { no: "029", kategori: "Development", kode: "DEV", aktivitas: "Instructor Informal Development", desc: "Technical Diskusi" },
-            { no: "030", kategori: "Instructional Activity", kode: "IA", aktivitas: "Training Delivery ( Formal )", desc: "Training Induksi" },
-            { no: "037", kategori: "Instructional Activity", kode: "IA", aktivitas: "Training Delivery ( Formal )", desc: "Practical Training" },
-            { no: "042", kategori: "Instructional Activity", kode: "IA", aktivitas: "Training Delivery ( Formal )", desc: "Mentoring Driver dan Operator" },
-            { no: "050", kategori: "Instructional Activity", kode: "IA", aktivitas: "Training Delivery ( Non Formal )", desc: "Coaching Operator" },
-            { no: "083", kategori: "Non-Instructional Activity", kode: "NIA", aktivitas: "Meeting", desc: "Daily Meeting Kordinasi" },
-            { no: "090", kategori: "Non-Instructional Activity", kode: "NIA", aktivitas: "Travel", desc: "Perjalanan Berangkat In-Site" }
-        ];
-
-        // STATE STATE DUMMY SEBAGAI CONTOH LAPORAN AWAL
-        let LaporanList = [
-            {
-                id: "L1",
-                username: "Hasim",
-                noKode: "042",
-                aktivitas: "Mentoring Driver dan Operator",
-                nama: "Hasim",
-                nik: "81.0625.6203",
-                jabatan: "Foreman Trainer",
-                tanggal: "2026-05-17",
-                lokasi: "BCM Selatan",
-                hours: 8,
-                jumlah: 3,
-                remarks: "Daftar Peserta:\n1. MUKSIN\n2. FAHREZAZLIN\n3. GUNARDI\n\nMateri:\nReview pengoperasian aman unit DT Scania.",
-                status: "Closed",
-                validation: "Validated",
-                feedback: "Laporan rapi dan valid. Bagus!"
+  <!-- Tailwind Custom Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            gpeBlue: {
+              50: '#f0f4f8',
+              900: '#0f1e36',
+              950: '#0a1224',
+              navy: '#1e3a8a',
+              darkNavy: '#0f2963',
             },
-            {
-                id: "L2",
-                username: "RegenTolanda",
-                noKode: "020",
-                aktivitas: "Inclass Training Development",
-                nama: "Regen Tolanda",
-                nik: "22.0512.436",
-                jabatan: "Supervisor Trainer",
-                tanggal: "2026-05-17",
-                lokasi: "Office TC GAM KM 12",
-                hours: 7,
-                jumlah: 1,
-                remarks: "Membuat materi presentasi Refresh Training.",
-                status: "Open",
-                validation: "Pending",
-                feedback: ""
+            gpeGreen: {
+              500: '#10b981',
+              600: '#059669',
             }
-        ];
-
-        let PlanningList = [
-            { id: "P1", tanggal: "2026-05-17", username: "Hasim", aktivitas: "Coaching Operator di BCM Selatan", hours: 8 },
-            { id: "P2", tanggal: "2026-05-18", username: "RegenTolanda", aktivitas: "Mentoring Driver di BCM Utara", hours: 8 }
-        ];
-
-        let NotifikasiList = [
-            { id: "N1", username: "Hasim", pengirim: "Admin", isi: "Laporan tanggal 17-05-2026 disetujui.", tanggal: "14:30", dibaca: false }
-        ];
-
-        // SESSION STATE APLIKASI
-        let currentUser = null; // null atau { username, role, ...profil }
-        let currentEmpTab = "dashboard"; 
-        let selectedActivityInForm = null;
-        let chartInstance = null;
-
-        // FLUTTER PRODUCTION CODE (Sesuai Desain Warna Logo GPE - Light Theme)
-        const FLUTTER_CODE = `// main.dart - Tracker Instructor GPE (Premium Light Theme)
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-void main() {
-  runApp(const TrackerInstructorApp());
-}
-
-class TrackerInstructorApp extends StatelessWidget {
-  const TrackerInstructorApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Tracker Instructor',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFF005088),
-        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-        colorScheme: const ColorScheme.light(
-          primary: Color(0xFF005088),
-          secondary: Color(0xFF0072C6),
-          surface: Colors.white,
-          background: Color(0xFFF8FAFC),
-        ),
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(Theme.of(context).textTheme),
-      ),
-      home: const SplashScreen(),
-    );
-  }
-}
-
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.analytics_rounded, size: 80, color: Color(0xFF005088)),
-            const SizedBox(height: 16),
-            Text(
-              'GPE TRACKER',
-              style: GoogleFonts.montserrat(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF005088),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'TRAINING CENTER DEPARTMENT',
-              style: TextStyle(fontSize: 10, letterSpacing: 1.5, fontWeight: FontWeight.bold, color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}`;
-
-        // 2. ON-LOAD SETUP
-        window.onload = function() {
-            initFormsAndDropdowns();
-            document.getElementById('flutter-code-box').value = FLUTTER_CODE;
-            showToast("Sistem Berhasil Dimuat", "PWA Graha Prima Energi Tracker siap diakses.", "success");
-        };
-
-        function setCredentials(u, p) {
-            document.getElementById('username').value = u;
-            document.getElementById('password').value = p;
+          }
         }
-
-        function initFormsAndDropdowns() {
-            // Isi Dropdown Lokasi Kerja
-            const lokasiSelect = document.getElementById('form-lokasi');
-            lokasiSelect.innerHTML = lokasiKerjaList.map(l => `<option value="${l}">${l}</option>`).join('');
-
-            // Isi Dropdown Admin Select Trainer
-            const adminFilterTrainer = document.getElementById('admin-filter-trainer');
-            adminFilterTrainer.innerHTML = `<option value="Semua">Semua Trainer</option>` + 
-                Object.keys(KARYAWAN_DB).map(k => `<option value="${k}">${KARYAWAN_DB[k].nama}</option>`).join('');
-
-            // Isi Dropdown Planning Trainer
-            const planTrainerSelect = document.getElementById('plan-username');
-            planTrainerSelect.innerHTML = Object.keys(KARYAWAN_DB).map(k => `<option value="${k}">${KARYAWAN_DB[k].nama}</option>`).join('');
-            
-            // Set Tanggal Hari Ini Default
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('form-date').value = today;
-            document.getElementById('plan-date').value = today;
-        }
-
-        // 3. TOAST & NOTIFIKASI SYSTEM
-        function showToast(title, msg, type = "success") {
-            const toast = document.getElementById('gpe-toast');
-            const icon = document.getElementById('toast-icon');
-            const tTitle = document.getElementById('toast-title');
-            const tMsg = document.getElementById('toast-msg');
-
-            tTitle.innerText = title;
-            tMsg.innerText = msg;
-
-            if (type === "success") {
-                icon.className = "fa-solid fa-circle-check text-emerald-600";
-            } else if (type === "warning") {
-                icon.className = "fa-solid fa-triangle-exclamation text-amber-600";
-            } else {
-                icon.className = "fa-solid fa-circle-xmark text-red-600";
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-                toast.classList.remove('translate-y-0', 'opacity-100');
-            }, 3000);
-        }
-
-        // 4. AUTHENTICATION SYSTEMS
-        function handleLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value;
-
-            if (u === "Admin" && p === "Admin123") {
-                currentUser = { username: "Admin", role: "Admin", nama: "Administrator" };
-                showToast("Otentikasi Berhasil", "Selamat datang di Portal Admin, Pak!", "success");
-                document.getElementById('view-login').classList.add('hidden');
-                document.getElementById('view-admin').classList.remove('hidden');
-                document.getElementById('btn-logout').classList.remove('hidden');
-                renderAdminDashboard();
-                return;
-            }
-
-            if (KARYAWAN_DB[u]) {
-                const expectPass = u === "CaturHerdian" ? "Catur12" : u === "DhimasMaychel" ? "Dimas123" : `${u}123`;
-                if (p === expectPass) {
-                    currentUser = { ...KARYAWAN_DB[u], username: u, role: "Employee" };
-                    showToast("Otentikasi Berhasil", `Selamat bekerja, ${currentUser.nama}`, "success");
-                    
-                    document.getElementById('view-login').classList.add('hidden');
-                    document.getElementById('view-karyawan').classList.remove('hidden');
-                    document.getElementById('btn-logout').classList.remove('hidden');
-                    
-                    // Show Mobile Navigation Bar
-                    document.getElementById('mobile-nav-bar').classList.remove('hidden');
-                    
-                    switchEmpScreen('dashboard');
-                    return;
-                }
-            }
-
-            showToast("Login Gagal", "Kombinasi sandi / username tidak terdaftar.", "error");
-        }
-
-        function logout() {
-            currentUser = null;
-            document.getElementById('view-admin').classList.add('hidden');
-            document.getElementById('view-karyawan').classList.add('hidden');
-            document.getElementById('mobile-nav-bar').classList.add('hidden');
-            document.getElementById('btn-logout').classList.add('hidden');
-            document.getElementById('view-login').classList.remove('hidden');
-            document.getElementById('form-login').reset();
-            showToast("Berhasil Keluar", "Sesi Anda telah aman diakhiri.", "warning");
-        }
-
-        // 5. EMPLOYEE INTERFACE CONTROLLERS
-        function switchEmpScreen(target) {
-            currentEmpTab = target;
-            
-            // Hide all employee screens
-            document.getElementById('emp-screen-dashboard').classList.add('hidden');
-            document.getElementById('emp-screen-input').classList.add('hidden');
-            document.getElementById('emp-screen-history').classList.add('hidden');
-            document.getElementById('emp-screen-notif').classList.add('hidden');
-            document.getElementById('emp-screen-flutter').classList.add('hidden');
-
-            // Show target
-            document.getElementById(`emp-screen-${target}`).classList.remove('hidden');
-
-            // Update Navigation Highlighting (Desktop & Mobile)
-            updateNavHighlights(target);
-
-            if (target === 'dashboard') {
-                renderEmpDashboard();
-            } else if (target === 'input') {
-                renderEmpInputForm();
-            } else if (target === 'history') {
-                renderEmpHistory();
-            } else if (target === 'notif') {
-                renderEmpNotif();
-            }
-        }
-
-        function updateNavHighlights(target) {
-            const tabs = ['dashboard', 'input', 'history', 'notif', 'flutter'];
-            tabs.forEach(t => {
-                // Desktop
-                const dNav = document.getElementById(`nav-d-${t}`);
-                if (dNav) {
-                    if (t === target) dNav.classList.add('bg-blue-50', 'text-gpe-blue');
-                    else dNav.classList.remove('bg-blue-50', 'text-gpe-blue');
-                }
-                // Mobile
-                const mNav = document.getElementById(`nav-m-${t}`);
-                if (mNav) {
-                    if (t === target) mNav.classList.add('text-gpe-blue');
-                    else mNav.classList.remove('text-gpe-blue');
-                }
-            });
-        }
-
-        // RENDER BERANDA (DASHBOARD) KARYAWAN
-        function renderEmpDashboard() {
-            const listUser = LaporanList.filter(l => l.username === currentUser.username);
-            const hours = listUser.reduce((acc, c) => acc + c.hours, 0);
-            const validated = listUser.filter(l => l.validation === "Validated").length;
-            const pending = listUser.filter(l => l.validation === "Pending").length;
-
-            document.getElementById('stat-total-jam').innerText = `${hours}h`;
-            document.getElementById('stat-disetujui').innerText = validated;
-            document.getElementById('stat-pending').innerText = pending;
-
-            // Injeksi NIK, Profil Avatar, & Jabatan
-            document.getElementById('emp-avatar').innerText = currentUser.nama.charAt(0);
-            document.getElementById('emp-nama').innerText = currentUser.nama;
-            document.getElementById('emp-nik').innerText = currentUser.nik;
-            document.getElementById('emp-jabatan').innerText = currentUser.jabatan;
-
-            // Target Tugas Kerja Terjadwal Hari Ini
-            const planHariIni = PlanningList.filter(p => p.username === currentUser.username);
-            const planContainer = document.getElementById('dashboard-planning-container');
-
-            if (planHariIni.length > 0) {
-                planContainer.innerHTML = planHariIni.map(p => `
-                    <div class="bg-slate-50 p-4 border border-slate-200 rounded-2xl flex justify-between items-center text-xs shadow-sm">
-                        <div>
-                            <strong class="text-slate-800 text-sm block">${p.aktivitas}</strong>
-                            <span class="text-slate-500 text-[10px] block mt-0.5">Tanggal: ${p.tanggal}</span>
-                        </div>
-                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-200 text-gpe-blue font-mono font-bold rounded-lg">${p.hours} Jam</span>
-                    </div>
-                `).join('');
-            } else {
-                planContainer.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs">Tidak ada instruksi planning khusus dari admin hari ini.</div>`;
-            }
-
-            // Update badge notif
-            updateNotifBadges();
-        }
-
-        function updateNotifBadges() {
-            const unread = NotifikasiList.filter(n => n.username === currentUser.username && !n.dibaca).length;
-            const badgeDesktop = document.getElementById('notif-badge-desktop');
-            const badgeMobile = document.getElementById('notif-badge-mobile');
-
-            if (unread > 0) {
-                badgeDesktop.classList.remove('hidden');
-                badgeMobile.classList.remove('hidden');
-            } else {
-                badgeDesktop.classList.add('hidden');
-                badgeMobile.classList.add('hidden');
-            }
-        }
-
-        // RENDER FORM INPUT
-        function renderEmpInputForm() {
-            document.getElementById('lock-nama').innerText = currentUser.nama;
-            document.getElementById('lock-nik').innerText = currentUser.nik;
-            document.getElementById('lock-jabatan').innerText = currentUser.jabatan;
-            document.getElementById('form-laporan-harian').reset();
-            document.getElementById('search-activity').value = "";
-            selectedActivityInForm = null;
-        }
-
-        function filterActivities(val) {
-            const dropdown = document.getElementById('search-results-dropdown');
-            if (!val.trim()) {
-                dropdown.classList.add('hidden');
-                return;
-            }
-
-            const query = val.toLowerCase();
-            const matches = ACTIVITY_LIST.filter(act => 
-                act.no.includes(query) || 
-                act.desc.toLowerCase().includes(query) || 
-                act.aktivitas.toLowerCase().includes(query)
-            );
-
-            if (matches.length > 0) {
-                dropdown.classList.remove('hidden');
-                dropdown.innerHTML = matches.map(act => `
-                    <div onclick="selectActivity('${act.no}', '${act.desc}')" class="p-3 hover:bg-slate-50 transition cursor-pointer text-xs flex justify-between">
-                        <div>
-                            <strong class="text-gpe-blue">[${act.no}]</strong>
-                            <span class="text-slate-800 ml-1.5 font-medium">${act.desc}</span>
-                        </div>
-                        <span class="text-[9px] text-slate-500 uppercase font-mono">${act.kode}</span>
-                    </div>
-                `).join('');
-            } else {
-                dropdown.classList.remove('hidden');
-                dropdown.innerHTML = `<div class="p-3 text-xs text-slate-500 text-center">Kode tidak ditemukan...</div>`;
-            }
-        }
-
-        function selectActivity(no, desc) {
-            selectedActivityInForm = { no, desc };
-            document.getElementById('search-activity').value = `[${no}] ${desc}`;
-            document.getElementById('search-results-dropdown').classList.add('hidden');
-        }
-
-        // SUBMIT LAPORAN HARIAN & LAUNCH WA EXPORT MODAL
-        function submitLaporanHarian(e) {
-            e.preventDefault();
-            if (!selectedActivityInForm) {
-                showToast("Form Gagal", "Harap pilih Kode Activity dari dropdown pencarian.", "warning");
-                return;
-            }
-
-            const date = document.getElementById('form-date').value;
-            const lokasi = document.getElementById('form-lokasi').value;
-            const hours = parseFloat(document.getElementById('form-hours').value);
-            const jumlah = parseInt(document.getElementById('form-jumlah').value);
-            const status = document.getElementById('form-status').value;
-            const remarks = document.getElementById('form-remarks').value;
-
-            const newLaporan = {
-                id: "L" + (LaporanList.length + 1),
-                username: currentUser.username,
-                noKode: selectedActivityInForm.no,
-                aktivitas: selectedActivityInForm.desc,
-                nama: currentUser.nama,
-                nik: currentUser.nik,
-                jabatan: currentUser.jabatan,
-                tanggal: date,
-                lokasi: lokasi,
-                hours: hours,
-                jumlah: jumlah,
-                remarks: remarks,
-                status: status,
-                validation: "Pending",
-                feedback: ""
-            };
-
-            LaporanList.push(newLaporan);
-            showToast("Laporan Terkirim", "Berhasil disimpan dan menunggu verifikasi.", "success");
-            
-            // Launch WA Generated Export Modal
-            launchWAModal(newLaporan);
-            switchEmpScreen('history');
-        }
-
-        function launchWAModal(lap) {
-            const textWA = `Daily Activity Trainer
-PT Graha Prima Energi
-Selamat Pagi
-Semangat Pagi 💪🏾
-
-📅 Tanggal   : ${lap.tanggal}
-📍 Lokasi    : ${lap.lokasi}
-🎯 Kegiatan  : ${lap.aktivitas}
-👷 Trainer   : ${lap.nama}
-👥 Peserta   : ${lap.jumlah} Orang
-
-Daftar Peserta & Catatan:
-${lap.remarks}
-
-Terima Kasih 🙏
-GPE Bekerja selamat Pekerjaan Tuntas`;
-
-            document.getElementById('wa-copy-area').value = textWA;
-            document.getElementById('wa-export-modal').classList.remove('hidden');
-        }
-
-        function executeCopyWA() {
-            const area = document.getElementById('wa-copy-area');
-            area.select();
-            document.execCommand('copy');
-            showToast("Salin Sukses", "Format pesan WhatsApp siap dikirim.", "success");
-            closeWAModal();
-        }
-
-        function closeWAModal() {
-            document.getElementById('wa-export-modal').classList.add('hidden');
-        }
-
-        // RENDER RIWAYAT (HISTORY) KARYAWAN
-        function renderEmpHistory() {
-            const userHistory = LaporanList.filter(l => l.username === currentUser.username);
-            const container = document.getElementById('history-container');
-
-            if (userHistory.length > 0) {
-                container.innerHTML = userHistory.map(l => `
-                    <div class="bg-white border ${l.validation === 'Validated' ? 'border-emerald-500/30 shadow-emerald-50/50' : l.validation === 'Rejected' ? 'border-red-500/30' : 'border-slate-200'} p-4 rounded-2xl space-y-3 relative shadow-sm">
-                        <span class="absolute top-4 right-4 text-[9px] font-bold px-2 py-0.5 rounded uppercase ${
-                            l.validation === 'Validated' ? 'bg-emerald-50 text-emerald-700' : 
-                            l.validation === 'Rejected' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'
-                        }">${l.validation}</span>
-
-                        <div>
-                            <span class="text-[9px] font-bold bg-slate-100 px-2 py-0.5 border border-slate-200 rounded text-gpe-blue">[${l.noKode}]</span>
-                            <h4 class="text-xs font-bold text-slate-800 mt-1.5">${l.aktivitas}</h4>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-500 border-t border-slate-100 pt-2.5">
-                            <div>Tanggal: <strong class="text-slate-800">${l.tanggal}</strong></div>
-                            <div>Lokasi: <strong class="text-slate-800">${l.lokasi}</strong></div>
-                            <div>Hours: <strong class="text-slate-800">${l.hours}h</strong></div>
-                            <div>Status: <strong class="text-gpe-blue font-bold">${l.status}</strong></div>
-                        </div>
-
-                        ${l.feedback ? `
-                            <div class="p-2.5 bg-slate-50 rounded-lg border-l-4 border-blue-500 text-[10px] text-slate-600">
-                                <strong>Feedback:</strong> "${l.feedback}"
-                            </div>
-                        ` : ''}
-
-                        <div class="flex justify-end gap-1.5 border-t border-slate-100 pt-2.5">
-                            <button onclick='launchWAModal(${JSON.stringify(l)})' class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-[10px] font-bold transition flex items-center gap-1">
-                                <i class="fa-brands fa-whatsapp"></i> WA Format
-                            </button>
-                            ${l.validation === "Pending" ? `
-                                <button onclick="deleteLaporan('${l.id}')" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-[10px] font-bold transition">Hapus</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs">Belum ada riwayat laporan terkirim.</div>`;
-            }
-        }
-
-        function deleteLaporan(id) {
-            LaporanList = LaporanList.filter(l => l.id !== id);
-            showToast("Terhapus", "Laporan harian berhasil dihapus permanent.", "success");
-            renderEmpHistory();
-        }
-
-        // RENDER NOTIFIKASI KARYAWAN
-        function renderEmpNotif() {
-            const list = NotifikasiList.filter(n => n.username === currentUser.username);
-            const container = document.getElementById('notifications-container');
-
-            if (list.length > 0) {
-                container.innerHTML = list.map(n => `
-                    <div class="p-4 bg-white border border-slate-200 rounded-2xl flex gap-3 items-start hover:bg-slate-50 transition shadow-sm">
-                        <div class="p-2.5 bg-blue-50 text-gpe-blue border border-blue-100 rounded-xl">
-                            <i class="fa-solid fa-bell"></i>
-                        </div>
-                        <div class="flex-grow space-y-1">
-                            <div class="flex justify-between items-center text-[9px] text-slate-500">
-                                <span class="font-extrabold text-gpe-blue">ADMINISTRATOR</span>
-                                <span>${n.tanggal}</span>
-                            </div>
-                            <p class="text-xs text-slate-700 leading-relaxed font-semibold">${n.isi}</p>
-                        </div>
-                    </div>
-                `).join('');
-                // tandai semua dibaca
-                NotifikasiList.forEach(not => { if (not.username === currentUser.username) not.dibaca = true; });
-                updateNotifBadges();
-            } else {
-                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs">Belum ada notifikasi baru masuk.</div>`;
-            }
-        }
-
-        function copyFlutterCode() {
-            const box = document.getElementById('flutter-code-box');
-            box.select();
-            document.execCommand('copy');
-            showToast("Kode Disalin", "Kode produksi Flutter siap digunakan.", "success");
-        }
-
-        // 6. ADMINISTRATOR INTERFACE SYSTEMS
-        function renderAdminDashboard() {
-            applyAdminFilters();
-            renderPlanningLists();
-        }
-
-        function applyAdminFilters() {
-            const selTrainer = document.getElementById('admin-filter-trainer').value;
-            const selDate = document.getElementById('admin-filter-date').value;
-
-            let filteredLaporan = LaporanList.filter(l => l.validation === "Validated");
-            let pendingLaporan = LaporanList.filter(l => l.validation === "Pending");
-
-            if (selTrainer !== "Semua") {
-                filteredLaporan = filteredLaporan.filter(l => l.username === selTrainer);
-                pendingLaporan = pendingLaporan.filter(l => l.username === selTrainer);
-            }
-
-            // METRICS CALCULATIONS
-            const totalHours = filteredLaporan.reduce((acc, c) => acc + c.hours, 0);
-            const totalClosed = filteredLaporan.filter(l => l.status === "Closed").length;
-            const totalLaporan = filteredLaporan.length;
-            const percentAchieved = totalLaporan > 0 ? Math.round((totalClosed / totalLaporan) * 100) : 0;
-
-            document.getElementById('adm-metric-pending').innerText = `${pendingLaporan.length} Doc`;
-            document.getElementById('adm-metric-jam').innerText = `${totalHours}h`;
-            document.getElementById('adm-metric-closed').innerText = totalClosed;
-            document.getElementById('adm-metric-pencapaian').innerText = `${percentAchieved}%`;
-
-            // RENDER GRAPH & LIST
-            updateChartInstance(filteredLaporan);
-            renderAdminPendingList(pendingLaporan);
-        }
-
-        function updateChartInstance(data) {
-            const ctx = document.getElementById('adminPerformanceChart').getContext('2d');
-            const totalClosed = data.filter(l => l.status === "Closed").length;
-            const totalOpen = data.filter(l => l.status === "Open").length;
-            const totalReplacement = data.filter(l => l.status === "Replacement Task").length;
-
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
-
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Closed', 'Open', 'Replacement'],
-                    datasets: [{
-                        label: 'Status Volume Pekerjaan',
-                        data: [totalClosed, totalOpen, totalReplacement],
-                        backgroundColor: ['#10b981', '#f59e0b', '#005088'],
-                        borderRadius: 12
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(15,23,42,0.04)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        function renderAdminPendingList(list) {
-            const container = document.getElementById('admin-pending-verification-list');
-            if (list.length > 0) {
-                container.innerHTML = list.map(l => `
-                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <strong class="text-sm font-extrabold text-slate-800 block">${l.nama}</strong>
-                                <span class="text-[10px] text-slate-500 block">${l.nik} • ${l.jabatan}</span>
-                            </div>
-                            <span class="text-[9px] bg-amber-50 text-amber-700 px-2 py-0.5 border border-amber-200 rounded font-bold uppercase">PENDING</span>
-                        </div>
-
-                        <div class="bg-white p-3 rounded-xl border border-slate-100 text-xs text-slate-600 space-y-1">
-                            <div>Kegiatan: <strong class="text-slate-800">[${l.noKode}] ${l.aktivitas}</strong></div>
-                            <div>Lokasi Kerja: <strong class="text-slate-800">${l.lokasi}</strong></div>
-                            <div>Hours / Jumlah: <strong class="text-slate-800">${l.hours}h / ${l.jumlah} Vol</strong></div>
-                        </div>
-
-                        <div class="text-xs text-slate-500">
-                            <span class="font-bold text-slate-800 block mb-1">Catatan Karyawan:</span>
-                            <p class="bg-white p-3 rounded-xl font-mono text-[11px] text-slate-600 leading-relaxed whitespace-pre-line border border-slate-100">${l.remarks}</p>
-                        </div>
-
-                        <!-- Feedback input & Action buttons -->
-                        <div class="space-y-2 border-t border-slate-200 pt-4">
-                            <input type="text" id="feedback-input-${l.id}" placeholder="Tulis feedback perbaikan / pesan..." class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-850 focus:outline-none focus:border-blue-500">
-                            <div class="flex gap-2">
-                                <button onclick="verifyLaporan('${l.id}', 'Validated')" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl text-xs transition flex justify-center items-center gap-1 shadow-sm">
-                                    <i class="fa-solid fa-circle-check"></i> Setujui
-                                </button>
-                                <button onclick="verifyLaporan('${l.id}', 'Rejected')" class="flex-grow bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-xl text-xs transition flex justify-center items-center gap-1 shadow-sm">
-                                    <i class="fa-solid fa-triangle-exclamation"></i> Revisi Balik
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs"><i class="fa-solid fa-shield-halved text-2xl mb-3 block text-slate-300"></i>Semua laporan masuk telah divalidasi.</div>`;
-            }
-        }
-
-        function verifyLaporan(id, decision) {
-            const feedbackInput = document.getElementById(`feedback-input-${id}`);
-            const feedback = feedbackInput.value.trim() || (decision === 'Validated' ? 'Laporan valid dan disetujui.' : 'Harap lengkapi remarks perbaikan.');
-
-            const lap = LaporanList.find(l => l.id === id);
-            if (lap) {
-                lap.validation = decision;
-                lap.feedback = feedback;
-
-                // Push notifikasi real-time ke database karyawan
-                NotifikasiList.push({
-                    id: "N" + (NotifikasiList.length + 1),
-                    username: lap.username,
-                    pengirim: "Admin",
-                    isi: `Laporan ${lap.tanggal} Anda di-[${decision}]. Feedback: ${feedback}`,
-                    tanggal: "Hari Ini",
-                    dibaca: false
-                });
-
-                showToast(`Validasi Sukses`, `Dokumen ${lap.nama} berhasil di-${decision}`, "success");
-                applyAdminFilters();
-            }
-        }
-
-        // PLANNING SYSTEMS
-        function submitPlanning(e) {
-            e.preventDefault();
-            const username = document.getElementById('plan-username').value;
-            const date = document.getElementById('plan-date').value;
-            const aktivitas = document.getElementById('plan-aktivitas').value.trim();
-            const hours = parseFloat(document.getElementById('plan-hours').value);
-
-            const newPlan = {
-                id: "P" + (PlanningList.length + 1),
-                username: username,
-                tanggal: date,
-                aktivitas: aktivitas,
-                hours: hours
-            };
-
-            PlanningList.push(newPlan);
-            showToast("Planning Disimpan", `Rencana kerja berhasil dikirim ke ${KARYAWAN_DB[username].nama}.`, "success");
-            
-            // Push notif ke karyawan
-            NotifikasiList.push({
-                id: "N" + (NotifikasiList.length + 1),
-                username: username,
-                pengirim: "Admin",
-                isi: `Target planning baru pada tanggal ${date} telah ditambahkan oleh Admin.`,
-                tanggal: "Hari Ini",
-                dibaca: false
-            });
-
-            document.getElementById('form-planning').reset();
-            renderPlanningLists();
-        }
-
-        function renderPlanningLists() {
-            const container = document.getElementById('admin-planning-list');
-            container.innerHTML = PlanningList.map(p => `
-                <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl flex justify-between items-center text-[11px] shadow-sm">
-                    <div>
-                        <strong class="text-slate-800 block">${KARYAWAN_DB[p.username]?.nama || p.username}</strong>
-                        <span class="text-slate-500 block">${p.tanggal} • ${p.aktivitas}</span>
-                    </div>
-                    <span class="px-2 py-0.5 bg-blue-50 text-gpe-blue font-bold border border-blue-200 rounded">${p.hours}h</span>
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased">
+
+  <div id="app" class="p-4 md:p-6 max-w-[1600px] mx-auto space-y-6">
+
+    <!-- TOP CONTROL BAR -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-calendar-days text-blue-900"></i>
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Rentang Observasi:</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <input 
+            type="date" 
+            id="input-start-date" 
+            class="bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600"
+          >
+          <span class="text-slate-400 text-xs font-medium">s/d</span>
+          <input 
+            type="date" 
+            id="input-end-date" 
+            class="bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600"
+          >
+        </div>
+        <button 
+          onclick="applyDateRange()"
+          class="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-4 py-1.5 rounded transition shadow-sm flex items-center space-x-1"
+        >
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Terapkan Rentang</span>
+        </button>
+        <button 
+          onclick="resetToAllData()"
+          class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs px-3 py-1.5 rounded transition flex items-center space-x-1"
+        >
+          <i class="fa-solid fa-arrows-to-eye"></i>
+          <span>Tampilkan Semua Data</span>
+        </button>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Input File Hidden (Untuk Impor CSV) -->
+        <input type="file" id="csv-upload" accept=".csv" class="hidden" onchange="handleCSVUpload(event)">
+        
+        <button 
+          onclick="document.getElementById('csv-upload').click()"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded transition flex items-center space-x-1.5 shadow-sm"
+        >
+          <i class="fa-solid fa-file-import"></i>
+          <span>Import CSV (Fuel Analysis)</span>
+        </button>
+
+        <button 
+          id="btn-download"
+          onclick="downloadDashboardImage()"
+          class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded transition flex items-center space-x-1.5 shadow-sm hidden"
+        >
+          <i class="fa-solid fa-camera"></i>
+          <span>Download Gambar Dasbor</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- BLANK STATE SCREEN (Shown when date range is empty) -->
+    <div id="blank-state" class="bg-white rounded-2xl shadow-md border border-slate-200 p-12 text-center max-w-xl mx-auto my-12 transition-all">
+      <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-slate-100">
+        <i class="fa-regular fa-calendar-plus text-slate-400 text-3xl"></i>
+      </div>
+      <h2 class="text-xl font-black text-slate-800">Rentang Tanggal Kosong</h2>
+      <p class="text-slate-500 text-sm mt-2 leading-relaxed">
+        Silakan tentukan tanggal mulai dan tanggal akhir observasi di atas, lalu klik <strong>Terapkan Rentang</strong> untuk menghasilkan visualisasi analisis dasbor secara instan.
+      </p>
+      <div class="mt-6 flex justify-center gap-3">
+        <button 
+          onclick="applyDefaultDateRange()"
+          class="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-6 py-2.5 rounded-lg shadow-md transition"
+        >
+          Tampilkan Semua Data
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN CANVAS CONTAINER -->
+    <div id="gpe-dashboard-canvas" class="bg-white border border-slate-300 p-6 shadow-xl rounded-sm text-slate-800 relative overflow-hidden hidden" style="min-width: 1200px;">
+      
+      <!-- TOP BANNER HEADER -->
+      <div class="border-b-[3px] border-blue-900 pb-3 mb-4 flex justify-between items-end">
+        <div>
+          <h1 class="text-3xl font-black tracking-tight text-blue-950 flex items-center gap-2">
+            COIP & OPERATHINK 
+            <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-sans">PT GPE</span>
+          </h1>
+          <div class="flex gap-4 text-[10px] text-slate-500 font-bold uppercase mt-1 tracking-wider">
+            <span>PERIODE OBSERVASI: <strong id="header-period" class="text-blue-900 font-extrabold">-</strong></span>
+            <span class="text-slate-300">|</span>
+            <span>JUMLAH OBSERVASI: <strong id="header-observasi-count" class="text-blue-900 font-extrabold">0 OBSERVASI</strong></span>
+            <span class="text-slate-300">|</span>
+            <span>ALAT: <strong class="text-blue-900 font-extrabold">EXCAVATOR (FLEET COIP)</strong></span>
+          </div>
+        </div>
+        
+        <!-- GPE Logo matching the layout -->
+        <div class="flex items-center gap-2">
+          <div class="text-right">
+            <span class="block text-lg font-black tracking-tight text-blue-900 leading-tight">GPE</span>
+            <span class="block text-[7px] tracking-widest text-slate-400 font-black">GRAHA PRIMA ENERGY</span>
+          </div>
+          <div class="w-8 h-8 flex flex-wrap gap-0.5 p-1 bg-blue-950 items-center justify-center rounded-sm shadow-sm">
+            <div class="w-2.5 h-2.5 bg-blue-900 rounded-2xs"></div>
+            <div class="w-2.5 h-2.5 bg-emerald-500 rounded-2xs"></div>
+            <div class="w-2.5 h-2.5 bg-sky-400 rounded-2xs"></div>
+            <div class="w-2.5 h-2.5 bg-amber-500 rounded-2xs"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THREE COLUMN GRID -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        
+        <!-- ================= PANEL 1: PRODUCTIVITY EXCAVATOR ================= -->
+        <div class="border border-slate-300 rounded shadow-sm bg-white flex flex-col justify-between">
+          <div class="bg-blue-950 text-white text-[11px] font-black tracking-wide py-1.5 px-3 uppercase">
+            1. PRODUCTIVITY EXCAVATOR (OPERATHINK)
+          </div>
+
+          <div class="p-3 space-y-4 flex-1 flex flex-col justify-between">
+            <!-- 4 KPI Metrics Gauges -->
+            <div class="grid grid-cols-4 gap-1.5 text-center">
+              
+              <!-- KPI Cycle Time -->
+              <div class="bg-slate-50 border border-slate-200 p-1 rounded flex flex-col justify-between items-center h-24">
+                <span class="text-[8px] font-extrabold text-slate-500 block leading-none uppercase">Rata-Rata Cycle Time</span>
+                <div class="my-1.5 flex items-center justify-center relative">
+                  <svg class="w-8 h-8 transform -rotate-90">
+                    <circle cx="16" cy="16" r="14" stroke="#e2e8f0" stroke-width="2" fill="transparent" />
+                    <circle cx="16" cy="16" r="14" stroke="#10b981" stroke-width="2" fill="transparent" stroke-dasharray="88" id="gauge-cycle" />
+                  </svg>
+                  <div class="absolute text-[12px]"><i class="fa-solid fa-stopwatch text-slate-400"></i></div>
                 </div>
-            `).join('');
+                <span class="text-xs font-black text-slate-800 leading-none"><span id="val-cycle">-</span> <span class="text-[8px] text-slate-500 font-bold">Detik</span></span>
+              </div>
+
+              <!-- KPI Primary Time -->
+              <div class="bg-slate-50 border border-slate-200 p-1 rounded flex flex-col justify-between items-center h-24">
+                <span class="text-[8px] font-extrabold text-slate-500 block leading-none uppercase">Rata-Rata Primary Time</span>
+                <div class="my-1.5 flex items-center justify-center relative">
+                  <svg class="w-8 h-8 transform -rotate-90">
+                    <circle cx="16" cy="16" r="14" stroke="#e2e8f0" stroke-width="2" fill="transparent" />
+                    <circle cx="16" cy="16" r="14" stroke="#10b981" stroke-width="2" fill="transparent" stroke-dasharray="88" id="gauge-primary" />
+                  </svg>
+                  <div class="absolute text-[12px]"><i class="fa-solid fa-gear text-slate-400"></i></div>
+                </div>
+                <span class="text-xs font-black text-blue-900 leading-none" id="val-primary">-%</span>
+              </div>
+
+              <!-- KPI Secondary Time -->
+              <div class="bg-slate-50 border border-slate-200 p-1 rounded flex flex-col justify-between items-center h-24">
+                <span class="text-[8px] font-extrabold text-slate-500 block leading-none uppercase">Rata-Rata Sec. Time</span>
+                <div class="my-1.5 flex items-center justify-center relative">
+                  <svg class="w-8 h-8 transform -rotate-90">
+                    <circle cx="16" cy="16" r="14" stroke="#e2e8f0" stroke-width="2" fill="transparent" />
+                    <circle cx="16" cy="16" r="14" stroke="#e11d48" stroke-width="2" fill="transparent" stroke-dasharray="88" id="gauge-secondary" />
+                  </svg>
+                  <div class="absolute text-[12px]"><i class="fa-solid fa-hourglass-half text-slate-400"></i></div>
+                </div>
+                <span class="text-xs font-black text-blue-900 leading-none" id="val-secondary">-%</span>
+              </div>
+
+              <!-- KPI Hauler -->
+              <div class="bg-slate-50 border border-slate-200 p-1 rounded flex flex-col justify-between items-center h-24">
+                <span class="text-[8px] font-extrabold text-slate-500 block leading-none uppercase">Rata-Rata Jml Hauler</span>
+                <div class="my-1.5 flex items-center justify-center relative">
+                  <svg class="w-8 h-8 transform -rotate-90">
+                    <circle cx="16" cy="16" r="14" stroke="#e2e8f0" stroke-width="2" fill="transparent" />
+                    <circle cx="16" cy="16" r="14" stroke="#3b82f6" stroke-width="2" fill="transparent" stroke-dasharray="88" id="gauge-hauler" />
+                  </svg>
+                  <div class="absolute text-[12px]"><i class="fa-solid fa-truck-moving text-slate-400"></i></div>
+                </div>
+                <span class="text-xs font-black text-slate-800 leading-none"><span id="val-hauler">-</span> <span class="text-[8px] text-slate-500 font-bold">Hauler</span></span>
+              </div>
+
+            </div>
+
+            <!-- TREND GRAPH (LINE CHART TREND CYCLE WITH SCROLL WRAPPER) -->
+            <div class="space-y-1">
+              <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Trend Cycle Time, Primary Time & Secondary Time</h4>
+              <div class="overflow-x-auto custom-scrollbar border border-slate-200 rounded bg-slate-50">
+                <div class="h-28 relative flex items-end" id="wrapper-trend-1">
+                  <svg id="chart-trend-1" class="w-full h-full" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                    <!-- Injected dynamically via JS -->
+                  </svg>
+                  <div id="chart-trend-1-labels" class="absolute bottom-0.5 left-0 right-0 flex justify-between px-2 text-[7px] font-bold text-slate-500">
+                    <!-- Injected dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="flex gap-3 justify-center text-[8px] font-bold text-slate-600 mt-1">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-1 bg-indigo-700 block rounded-full"></span> Cycle Time (detik)</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-1 bg-emerald-500 block rounded-full"></span> Primary Time (%)</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-1 bg-slate-400 block rounded-full"></span> Secondary Time (%)</span>
+              </div>
+            </div>
+
+            <!-- TABLE SUMMARY PARAMETER -->
+            <div class="border border-slate-200 rounded overflow-hidden">
+              <div class="bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-600 uppercase border-b border-slate-200">
+                Ringkasan Parameter Produktivitas & Operasional
+              </div>
+              <table class="w-full text-left text-[10px] border-collapse">
+                <tbody class="divide-y divide-slate-100">
+                  <tr>
+                    <td class="p-1 px-2 text-slate-500">Rata-rata Primary Time</td>
+                    <td id="td-avg-primary" class="p-1 px-2 font-bold text-right text-slate-800">-</td>
+                  </tr>
+                  <tr class="bg-slate-50/50">
+                    <td class="p-1 px-2 text-slate-500">Rata-rata Secondary Time</td>
+                    <td id="td-avg-secondary" class="p-1 px-2 font-bold text-right text-slate-800">-</td>
+                  </tr>
+                  <tr>
+                    <td class="p-1 px-2 text-slate-500">Rata-rata Cycle Time</td>
+                    <td id="td-avg-cycle" class="p-1 px-2 font-bold text-right text-slate-800">-</td>
+                  </tr>
+                  <tr class="bg-slate-50/50">
+                    <td class="p-1 px-2 text-slate-500">Rata-rata Jumlah Hauler</td>
+                    <td id="td-avg-hauler" class="p-1 px-2 font-bold text-right text-slate-800">-</td>
+                  </tr>
+                  <tr>
+                    <td class="p-1 px-2 text-slate-500">Rata-rata Jarak Tempuh</td>
+                    <td id="td-avg-distance" class="p-1 px-2 font-bold text-right text-slate-800">-</td>
+                  </tr>
+                  <tr class="bg-slate-50/50">
+                    <td class="p-1 px-2 text-slate-500">Rata-rata Speed</td>
+                    <td id="td-avg-speed" class="p-1 px-2 font-bold text-right text-slate-800">-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- INSIGHT BOX -->
+            <div class="bg-slate-50 border border-slate-200 rounded p-2.5 text-[9px] space-y-1">
+              <div class="text-[10px] font-extrabold text-emerald-700 flex items-center gap-1 uppercase">
+                <i class="fa-solid fa-circle-info"></i> INSIGHT PRODUCTIVITY & EFISIENSI
+              </div>
+              <ul id="list-insight-productivity" class="list-disc pl-3.5 space-y-0.5 text-slate-600 font-medium">
+                <!-- Generated dynamically based on data -->
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================= PANEL 2: PRODUCTIVITY ANALYSIS ================= -->
+        <div class="border border-slate-300 rounded shadow-sm bg-white flex flex-col justify-between">
+          <div class="bg-blue-950 text-white text-[11px] font-black tracking-wide py-1.5 px-3 uppercase">
+            2. ANALISIS PRODUKTIVITAS (TARGET PTY MCC vs AKTUAL PTY OPERATHINK)
+          </div>
+
+          <div class="p-3 space-y-4 flex-1 flex flex-col justify-between">
+            <!-- 3 KPI Cards -->
+            <div class="grid grid-cols-3 gap-1.5 text-center">
+              
+              <div class="bg-slate-50 border border-slate-200 p-1.5 rounded flex flex-col justify-between items-center h-20">
+                <span class="text-[8px] font-bold text-slate-500 block leading-none uppercase">Rata-rata target (mcc)</span>
+                <div class="text-lg"><i class="fa-solid fa-bullseye text-slate-400"></i></div>
+                <span class="text-xs font-black text-slate-800 leading-none"><span id="val-pty-mcc">-</span> <span class="text-[7px] text-slate-500 font-bold">BCM/Jam</span></span>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 p-1.5 rounded flex flex-col justify-between items-center h-20">
+                <span class="text-[8px] font-bold text-slate-500 block leading-none uppercase">Rata-rata aktual (opr)</span>
+                <div class="text-lg"><i class="fa-solid fa-chart-line text-emerald-600"></i></div>
+                <span class="text-xs font-black text-slate-800 leading-none"><span id="val-pty-opr">-</span> <span class="text-[7px] text-slate-500 font-bold">BCM/Jam</span></span>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 p-1.5 rounded flex flex-col justify-between items-center h-20">
+                <span class="text-[8px] font-bold text-slate-500 block leading-none uppercase">Selisih Produktivitas</span>
+                <div class="text-lg"><i class="fa-solid fa-scale-balanced text-slate-400"></i></div>
+                <span id="val-pty-diff" class="text-xs font-black leading-none">- BCM/Jam</span>
+              </div>
+
+            </div>
+
+            <!-- COMPARISON BAR CHART (SVG representation) -->
+            <div class="space-y-1">
+              <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Perbandingan Produktivitas (BCM/Jam)</h4>
+              <div class="overflow-x-auto custom-scrollbar border border-slate-200 rounded bg-slate-50">
+                <div class="h-28 relative flex items-end" id="wrapper-pty">
+                  <svg id="chart-pty" class="w-full h-full" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                    <!-- Injected dynamically -->
+                  </svg>
+                  <div id="chart-pty-labels" class="absolute bottom-0.5 left-0 right-0 flex justify-between px-2 text-[7px] font-bold text-slate-500">
+                    <!-- Injected dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="flex gap-4 justify-center text-[8px] font-bold text-slate-600 mt-1">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-1.5 bg-blue-900 block rounded-2xs"></span> Target PTY MCC (BCM)</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-1.5 bg-emerald-500 block rounded-2xs"></span> Aktual PTY Opr (BCM)</span>
+              </div>
+            </div>
+
+            <!-- COMPARATIVE LOGS TABLE -->
+            <div class="border border-slate-200 rounded overflow-hidden flex-1 max-h-[140px] flex flex-col justify-between">
+              <table class="w-full text-left text-[9px] border-collapse">
+                <thead class="bg-blue-950 text-white font-bold uppercase sticky top-0">
+                  <tr>
+                    <th class="p-1 px-1.5 text-center">No</th>
+                    <th class="p-1">Unit</th>
+                    <th class="p-1">Nama Operator</th>
+                    <th class="p-1 text-center">Tanggal</th>
+                    <th class="p-1 text-right">Target MCC</th>
+                    <th class="p-1 text-right">Aktual Opr</th>
+                    <th class="p-1 text-right">Selisih</th>
+                  </tr>
+                </thead>
+                <tbody id="table-comparative-rows" class="divide-y divide-slate-100 overflow-y-auto custom-scrollbar">
+                  <!-- Rows injected dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- INSIGHT BOX -->
+            <div class="bg-slate-50 border border-slate-200 rounded p-2.5 text-[9px] space-y-1">
+              <div class="text-[10px] font-extrabold text-emerald-700 flex items-center gap-1 uppercase">
+                <i class="fa-solid fa-lightbulb"></i> INSIGHT PERFORMA PRODUKTIVITAS
+              </div>
+              <ul id="list-insight-pty" class="list-disc pl-3.5 space-y-0.5 text-slate-600 font-medium">
+                <!-- Generated dynamically based on data -->
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================= PANEL 3: COIP ================= -->
+        <div class="border border-slate-300 rounded shadow-sm bg-white flex flex-col justify-between">
+          <div class="bg-blue-950 text-white text-[11px] font-black tracking-wide py-1.5 px-3 uppercase">
+            3. COIP (CUSTOMER OPERATION IMPROVEMENT PROGRAM)
+          </div>
+
+          <div class="p-3 space-y-4 flex-1 flex flex-col justify-between">
+            <!-- Ringkasan COIP 4 KPI -->
+            <div class="grid grid-cols-4 gap-1 text-center">
+              
+              <div class="bg-slate-50 border border-slate-200 p-1 rounded flex flex-col justify-between items-center h-20">
+                <span class="text-[8px] font-bold text-slate-500 block leading-none uppercase">Rata-Rata COIP Score</span>
+                <div class="text-base"><i class="fa-solid fa-trophy text-emerald-600"></i></div>
+                <span id="val-coip-avg" class="text-xs font-black text-slate-800 leading-none">-</span>
+                <span class="text-[6px] text-slate-400 font-semibold">(Skala 1-5)</span>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 p-1 rounded flex flex-col justify-between items-center h-20">
+                <span class="text-[8px] font-bold text-slate-500 block leading-none uppercase">Score Tertinggi</span>
+                <div class="text-base"><i class="fa-solid fa-chevron-up text-blue-900"></i></div>
+                <span id="val-coip-max" class="text-xs font-black text-slate-800 leading-none">-</span>
+                <span id="val-coip-max-detail" class="text-[6px] text-slate-400 font-bold truncate w-full px-0.5">-</span>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 p-1 rounded flex flex-col justify-between items-center h-20">
+                <span class="text-[8px] font-bold text-slate-500 block leading-none uppercase">Score Terendah</span>
+                <div class="text-base"><i class="fa-solid fa-chevron-down text-rose-600"></i></div>
+                <span id="val-coip-min" class="text-xs font-black text-slate-800 leading-none">-</span>
+                <span id="val-coip-min-detail" class="text-[6px] text-slate-400 font-bold truncate w-full px-0.5">-</span>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 p-1 rounded flex flex-col justify-between items-center h-20">
+                <span class="text-[8px] font-bold text-slate-500 block leading-none uppercase">Jumlah Observasi</span>
+                <div class="text-base"><i class="fa-solid fa-user-group text-slate-400"></i></div>
+                <span id="val-coip-count" class="text-xs font-black text-slate-800 leading-none">-</span>
+                <span class="text-[6px] text-slate-400 font-semibold">Observasi</span>
+              </div>
+
+            </div>
+
+            <!-- TREND LINE COIP SCORE -->
+            <div class="space-y-1">
+              <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Trend Final Score COIP</h4>
+              <div class="overflow-x-auto custom-scrollbar border border-slate-200 rounded bg-slate-50">
+                <div class="h-28 relative flex items-end" id="wrapper-coip">
+                  <svg id="chart-coip" class="w-full h-full" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                    <!-- Injected dynamically -->
+                  </svg>
+                  <div id="chart-coip-labels" class="absolute bottom-0.5 left-0 right-0 flex justify-between px-2 text-[7px] font-bold text-slate-500">
+                    <!-- Injected dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROW: DONUT DISTRIBUTION & LOGS COIP TABLE -->
+            <div class="grid grid-cols-2 gap-2">
+              
+              <!-- Left Block: Donut Chart Distribution -->
+              <div class="border border-slate-200 rounded p-2 flex flex-col justify-between">
+                <h5 class="text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-2">Distribusi Final Score COIP</h5>
+                
+                <div class="flex items-center gap-2">
+                  <!-- Simple SVG Donut Chart -->
+                  <div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+                    <svg class="w-full h-full transform -rotate-90">
+                      <circle cx="28" cy="28" r="24" stroke="#e2e8f0" stroke-width="4" fill="transparent" />
+                      <circle id="donut-high" cx="28" cy="28" r="24" stroke="#10b981" stroke-width="4" fill="transparent" stroke-dasharray="150" stroke-dashoffset="150" />
+                      <circle id="donut-mid" cx="28" cy="28" r="24" stroke="#fbbf24" stroke-width="4" fill="transparent" stroke-dasharray="150" stroke-dashoffset="150" />
+                    </svg>
+                    <div class="absolute text-[8px] font-bold text-slate-700 flex flex-col items-center">
+                      <span id="donut-center-total" class="leading-none text-xs font-black">-</span>
+                      <span class="text-[5px] uppercase font-black tracking-tighter text-slate-400">Total</span>
+                    </div>
+                  </div>
+
+                  <div class="text-[8px] space-y-0.5 flex-1 font-bold text-slate-600">
+                    <div class="flex items-center justify-between">
+                      <span class="text-emerald-600">■ 4,8 - 5,0 (High)</span>
+                      <span id="dist-high">- Obs</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-amber-500">■ 4,5 - 4,7 (Mid)</span>
+                      <span id="dist-mid">- Obs</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-slate-400">■ ≤ 4,4 (Low)</span>
+                      <span id="dist-low">- Obs</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Block: Detail Score Table -->
+              <div class="border border-slate-200 rounded overflow-hidden flex flex-col h-[74px]">
+                <div class="bg-slate-100 text-[8px] font-bold text-slate-600 py-1 px-1.5 border-b border-slate-200 uppercase">
+                  Detail Final Score COIP
+                </div>
+                <div class="overflow-y-auto flex-1 custom-scrollbar">
+                  <table class="w-full text-left text-[8px]">
+                    <thead class="bg-slate-50 sticky top-0 border-b border-slate-100 font-bold text-slate-500">
+                      <tr>
+                        <th class="p-1 px-1.5">No</th>
+                        <th class="p-1">Unit</th>
+                        <th class="p-1">Operator</th>
+                        <th class="p-1 text-center">Score</th>
+                      </tr>
+                    </thead>
+                    <tbody id="table-coip-rows" class="divide-y divide-slate-100">
+                      <!-- Rows injected dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- INSIGHT BOX -->
+            <div class="bg-slate-50 border border-slate-200 rounded p-2.5 text-[9px] space-y-1">
+              <div class="text-[10px] font-extrabold text-emerald-700 flex items-center gap-1 uppercase">
+                <i class="fa-solid fa-triangle-exclamation"></i> INSIGHT LAPANGAN & REKOMENDASI COIP
+              </div>
+              <ul id="list-insight-coip" class="list-disc pl-3.5 space-y-0.5 text-slate-600 font-medium">
+                <!-- Generated dynamically based on data -->
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- INTERNAL JAVASCRIPT APP LOGIC WITH THE COMPLETE 39 RECORD SPREADSHEET DATA -->
+  <script>
+    // Database Spreadsheet Default 
+    let spreadsheetData = [
+      { id: 1, nik: '220.115.510', operator: 'Amirullah', unit: 'GEK 1228', tanggal: '2026-05-05', material: 'OB Blasting', hauler: 7, cycleTime: 25, primaryTime: 74, secondaryTime: 26, targetFuel: 550, actualFuel: 548, mode: 'P+', fuel: 116, distance: 2, speed: 19, score: 4.7, remarks: 'Setelah di Observasi disarankan menggunakan Mode P' },
+      { id: 2, nik: '21.013.964', operator: 'Muhammad Efendi', unit: 'GEK 1220', tanggal: '2026-05-06', material: 'OB Blasting', hauler: 6, cycleTime: 33, primaryTime: 89, secondaryTime: 11, targetFuel: 420, actualFuel: 505, mode: 'P', fuel: 109, score: 4.9, remarks: 'Loading poin lebar 15m, Material keras layer ke 2' },
+      { id: 3, nik: '21.013.964', operator: 'Muhammad Efendi', unit: 'GEK 1220', tanggal: '2026-05-06', material: 'OB Blasting', hauler: 6, cycleTime: 27, primaryTime: 69, secondaryTime: 31, targetFuel: 630, actualFuel: 534, mode: 'P+', fuel: 106, score: 4.9, remarks: 'Material Keras ke layer 2' },
+      { id: 4, nik: '8.203.255.749', operator: 'Rusdi', unit: 'GEK 1227', tanggal: '2026-05-07', material: 'OB Blasting', hauler: 5, cycleTime: 26, primaryTime: 78, secondaryTime: 22, targetFuel: 605, actualFuel: 595, mode: 'P', fuel: 115, score: 4.8, remarks: 'Front Berair dan Dudukan Lembek & Berair' },
+      { id: 5, nik: '8.203.255.749', operator: 'Rusdi', unit: 'GEK 1227', tanggal: '2026-05-07', material: 'OB Blasting', hauler: 5, cycleTime: 25, primaryTime: 71, secondaryTime: 29, targetFuel: 546, actualFuel: 587, mode: 'P+', fuel: 116, score: 4.8, remarks: 'Front Berair, Dudukan Lembek dan Undulating' },
+      { id: 6, nik: '220.115.510', operator: 'Amirullah', unit: 'GEK 1228', tanggal: '2026-05-08', material: 'OB Blasting Layer 2', hauler: 7, cycleTime: 20, primaryTime: 69, secondaryTime: 31, targetFuel: 536, actualFuel: 570, mode: 'P', fuel: 111, score: 4.7, remarks: 'Front Loading Slip, Dudukan Excavator Lembek' },
+      { id: 7, nik: '220.115.510', operator: 'Amirullah', unit: 'GEK 1228', tanggal: '2026-05-08', material: 'OB Blasting Layer 2', hauler: 7, cycleTime: 21, primaryTime: 69, secondaryTime: 31, targetFuel: 536, actualFuel: 560, mode: 'P+', fuel: 112, score: 4.7, remarks: 'Front Loading Slip, Dudukan Excavator Lembek' },
+      { id: 8, nik: '21.013.964', operator: 'Muhammad Efendi', unit: 'GEK 1220', tanggal: '2026-05-08', material: 'OB Non Blasting', hauler: 5, cycleTime: 30, primaryTime: 84, secondaryTime: 16, targetFuel: 420, actualFuel: 447, mode: 'P+', fuel: 117, score: 5.0, remarks: 'Material Keras, No Ripping, No Blasting' },
+      { id: 9, nik: '21.013.964', operator: 'Muhammad Efendi', unit: 'GEK 1220', tanggal: '2026-05-08', material: 'OB Non Blasting', hauler: 5, cycleTime: 29, primaryTime: 87, secondaryTime: 13, targetFuel: 462, actualFuel: 491, mode: 'P', fuel: 112, score: 5.0, remarks: 'Material Keras, No Ripping, No Blasting' },
+      { id: 10, nik: '8.203.255.749', operator: 'Rusdi', unit: 'GEK 1227', tanggal: '2026-05-09', material: 'OB Pasir', hauler: 9, cycleTime: 24, primaryTime: 68, secondaryTime: 32, targetFuel: 561, actualFuel: 590, mode: 'P', fuel: 105, score: 4.9, remarks: 'Front Berair dan Berpasir' },
+      { id: 11, nik: '8.203.255.749', operator: 'Rusdi', unit: 'GEK 1227', tanggal: '2026-05-09', material: 'OB Pasir', hauler: 8, cycleTime: 22, primaryTime: 73, secondaryTime: 27, targetFuel: 536, actualFuel: 563, mode: 'P+', fuel: 113, score: 4.9, remarks: 'Front Berair dan Berpasir' },
+      { id: 12, nik: '8.204.222.017', operator: 'Imanuel Rapalangi', unit: 'GEK 1220', tanggal: '2026-05-11', material: 'OB Blasting', hauler: 7, cycleTime: 23, primaryTime: 69, secondaryTime: 31, targetFuel: 510, actualFuel: 566, mode: 'P', fuel: 97, score: 4.8, remarks: 'Idling Time Tinggi' },
+      { id: 13, nik: '8.205.222.024', operator: 'Gistor Kiding Allo', unit: 'GEK 1218', tanggal: '2026-05-12', material: 'OB Blasting', hauler: 8, cycleTime: 24, primaryTime: 79, secondaryTime: 21, targetFuel: 561, actualFuel: 583, mode: 'P', fuel: 0, score: 4.7, remarks: 'Tinggi Jenjang Kurang' },
+      { id: 14, nik: '8.205.222.024', operator: 'Gistor Kiding Allo', unit: 'GEK 1212', tanggal: '2026-05-13', material: 'OB Blasting', hauler: 7, cycleTime: 26, primaryTime: 62, secondaryTime: 38, targetFuel: 434, actualFuel: 453, mode: 'P', fuel: 0, score: 4.9, remarks: 'Idling Time Tinggi' },
+      { id: 15, nik: '8.205.222.024', operator: 'Gistor Kiding Allo', unit: 'GEK 1218', tanggal: '2026-05-14', material: 'OB Blasting', hauler: 5, cycleTime: 25, primaryTime: 58, secondaryTime: 42, targetFuel: 462, actualFuel: 407, mode: 'P', fuel: 0, score: 4.9, remarks: 'Idling Time tinggi dan Breakdown HD' },
+      { id: 16, nik: '8.204.222.017', operator: 'Imanuel Rapalangi', unit: 'GEK 1220', tanggal: '2026-05-15', material: 'OB Non Blasting', hauler: 7, cycleTime: 22, primaryTime: 61, secondaryTime: 39, targetFuel: 491, actualFuel: 482, mode: 'P', fuel: 113, score: 4.8, remarks: 'Tinggi jenjang kurang, Idling Time Tinggi' },
+      { id: 17, nik: '8.212.245.162', operator: 'Sebastianus Leo', unit: 'GEK 1228', tanggal: '2026-05-16', material: 'OB Blasting', hauler: 5, cycleTime: 24, primaryTime: 85, secondaryTime: 16, targetFuel: 546, actualFuel: 546, mode: 'P', fuel: 115, score: 4.7, remarks: 'Operasional normal' },
+      { id: 18, nik: '8.204.211.281', operator: 'Sebastianus Fransiskus Nong', unit: 'GEK 1228', tanggal: '2026-05-18', material: 'OB Blasting', hauler: 5, cycleTime: 21, primaryTime: 73, secondaryTime: 27, targetFuel: 504, actualFuel: 586, mode: 'P', fuel: 101, score: 4.7, remarks: 'Operasional normal' },
+      { id: 19, nik: '8.204.221.978', operator: 'Meijon P. E. Lumbantungkup', unit: 'GEK 1207', tanggal: '2026-05-19', material: 'OB Blasting', hauler: 6, cycleTime: 24, primaryTime: 77, secondaryTime: 23, targetFuel: 417, actualFuel: 561, mode: 'P', fuel: 0, score: 4.9, remarks: 'Beberapa Operator MCU Tahunan' },
+      { id: 20, nik: '8.205.232.907', operator: 'Yardi', unit: 'GEH 1216', tanggal: '2026-05-19', material: 'OB Blasting', hauler: 5, cycleTime: 22, primaryTime: 89, secondaryTime: 11, targetFuel: 798, actualFuel: 725, mode: 'P', fuel: 0, score: 4.9, remarks: 'Operasional normal' },
+      { id: 21, nik: '8.202.221.905', operator: 'Paulus Rapa', unit: 'GEK 1219', tanggal: '2026-05-20', material: 'OB Blasting', hauler: 6, cycleTime: 28, primaryTime: 72, secondaryTime: 28, targetFuel: 587, actualFuel: 670, mode: 'P', fuel: 0, score: 4.6, remarks: 'Material Keras, Kuku Tumpul, Front Sempit' },
+      { id: 22, nik: '820.617.411', operator: 'Roni Kiding Allo', unit: 'GEK 1227', tanggal: '2026-05-20', material: 'OB Blasting', hauler: 5, cycleTime: 25, primaryTime: 69, secondaryTime: 31, targetFuel: 504, actualFuel: 516, mode: 'p', fuel: 0, score: 4.4, remarks: 'Ada Pengisian Fuel di menit 35-40, HD ada Cross Loading' },
+      { id: 23, nik: '21.013.964', operator: 'Muhammad Efendi', unit: 'GEK 1220', tanggal: '2026-05-21', material: 'OB Blasting', hauler: 8, cycleTime: 25, primaryTime: 71, secondaryTime: 29, targetFuel: 510, actualFuel: 588, mode: 'P', fuel: 0, score: 5.0, remarks: 'Operasional normal' },
+      { id: 24, nik: '220.115.510', operator: 'Amirullah', unit: 'GEK 1228', tanggal: '2026-05-21', material: 'OB Blasting', hauler: 6, cycleTime: 24, primaryTime: 64, secondaryTime: 36, targetFuel: 546, actualFuel: 546, mode: 'P', fuel: 0, score: 4.8, remarks: 'Jalan Sempit & Menanjak' },
+      { id: 25, nik: '21.013.964', operator: 'Muhammad Efendi', unit: 'GEK 1220', tanggal: '2026-05-22', material: 'OB Blasting', hauler: 7, cycleTime: 27, primaryTime: 66, secondaryTime: 34, targetFuel: 536, actualFuel: 556, mode: 'P', fuel: 0, score: 5.0, remarks: 'Jalan menuju Front Sempit' },
+      { id: 26, nik: '820.617.411', operator: 'Roni Kiding Allo', unit: 'GEK 1227', tanggal: '2026-05-22', material: 'OB Blasting', hauler: 6, cycleTime: 23, primaryTime: 73, secondaryTime: 28, targetFuel: 690, actualFuel: 951, mode: 'P', fuel: 0, score: 4.9, remarks: 'Ada HD 465 BD (Breakdown)' },
+      { id: 27, nik: '820.615.177', operator: 'Aris Palombu', unit: 'GEK 1218', tanggal: '2026-05-25', material: 'OB Blasting', hauler: 7, cycleTime: 24, primaryTime: 76, secondaryTime: 24, targetFuel: 520, actualFuel: 509, mode: 'P', fuel: 0, score: 4.2, remarks: 'Material Pasir Keras' },
+      { id: 28, nik: '8.208.211.568', operator: 'Doni Siampa', unit: 'GEK 1228', tanggal: '2026-05-25', material: 'OB Blasting', hauler: 6, cycleTime: 27, primaryTime: 70, secondaryTime: 30, targetFuel: 554, actualFuel: 436, mode: 'P', fuel: 0, score: 4.3, remarks: 'Front Slip Menanjak dan Banyak Jalan Hauling terdapat penyempitan' },
+      { id: 29, nik: '820.615.177', operator: 'Aris Palombu', unit: 'GEK 1218', tanggal: '2026-05-26', material: 'OB Blasting', hauler: 7, cycleTime: 21, primaryTime: 66, secondaryTime: 34, targetFuel: 536, actualFuel: 661, mode: 'P', fuel: 0, score: 4.8, remarks: 'Operasional normal' },
+      { id: 30, nik: '821.117.474', operator: 'Nalber Marthen Baka', unit: 'GEK 1227', tanggal: '2026-05-27', material: 'OB Blasting', hauler: 5, cycleTime: 22, primaryTime: 80, secondaryTime: 20, targetFuel: 655, actualFuel: 690, mode: 'P', fuel: 0, score: 4.4, remarks: 'Front Sempit' },
+      { id: 31, nik: '20.211.540', operator: 'Supardi', unit: 'GEK 1213', tanggal: '2026-05-27', material: 'OB Blasting', hauler: 8, cycleTime: 20, primaryTime: 71, secondaryTime: 30, targetFuel: 561, actualFuel: 563, mode: 'P', fuel: 0, score: 4.2, remarks: 'Jenjang front kurang dari 2 Meter dan front sempit' },
+      { id: 32, nik: '821.117.474', operator: 'Nalber Marthen Baka', unit: 'GEK 1219', tanggal: '2026-05-28', material: 'OB Blasting', hauler: 5, cycleTime: 25, primaryTime: 82, secondaryTime: 18, targetFuel: 669, actualFuel: 651, mode: 'P', fuel: 0, score: 4.8, remarks: 'Jalan Akses Front Sempit' },
+      { id: 33, nik: '820.615.177', operator: 'Aris Palombu', unit: 'GEK 1218', tanggal: '2026-05-28', material: 'OB Blasting', hauler: 5, cycleTime: 23, primaryTime: 62, secondaryTime: 38, targetFuel: 510, actualFuel: 547, mode: 'P', fuel: 0, score: 4.7, remarks: 'Pindah Front Menit 14:20' },
+      { id: 34, nik: '8.205.222.057', operator: 'Marthen Pauang', unit: 'GEK 1227', tanggal: '2026-05-29', material: 'OB Blasting', hauler: 8, cycleTime: 22, primaryTime: 74, secondaryTime: 26, targetFuel: 587, actualFuel: 595, mode: 'P', fuel: 0, score: 4.8, remarks: 'Material Keras' },
+      { id: 35, nik: '8.204.222.017', operator: 'Imanuel Rapalangi', unit: 'GEK 1220', tanggal: '2026-05-29', material: 'OB Blasting', hauler: 7, cycleTime: 23, primaryTime: 51, secondaryTime: 49, targetFuel: 510, actualFuel: 521, mode: 'P', fuel: 0, score: 5.0, remarks: 'Front Berair, HD amblas amblas' },
+      { id: 36, nik: '820.617.411', operator: 'Roni Kiding Allo', unit: 'GEK 1227', tanggal: '2026-06-02', material: 'OB Blasting', hauler: 5, cycleTime: 23, primaryTime: 71, secondaryTime: 29, targetFuel: 548, actualFuel: 525, mode: 'P', fuel: 0, score: 4.9, remarks: 'Material Keras, Excavator Pindah Front' },
+      { id: 37, nik: '8.201.243.826', operator: 'Muhammad Abu', unit: 'GEK 1218', tanggal: '2026-06-02', material: 'OB Ripping', hauler: 6, cycleTime: 27, primaryTime: 84, secondaryTime: 16, targetFuel: 581, actualFuel: 612, mode: 'P', fuel: 0, score: 4.8, remarks: 'Jengjang Bench Tipis, Material Ripping' },
+      { id: 38, nik: '220.412.377', operator: 'Iwan Kurniawan', unit: 'GEK 1202', tanggal: '2026-06-03', material: 'OB Blasting', hauler: 7, cycleTime: 34, primaryTime: 65, secondaryTime: 35, targetFuel: 510, actualFuel: 420, mode: 'P', fuel: 0, score: 4.9, remarks: 'Excavator Low Power' },
+      { id: 39, nik: '8.204.256.005', operator: 'Abdullah Hamsir Guni', unit: 'GEK 1207', tanggal: '2026-06-03', material: 'OB Blasting', hauler: 8, cycleTime: 22, primaryTime: 67, secondaryTime: 33, targetFuel: 521, actualFuel: 517, mode: 'P', fuel: 0, score: 4.8, remarks: 'Pindah Front, Top Loading' }
+    ];
+
+    let isDateApplied = true;
+
+    // Inisialisasi program pas pemuatan pertama kali
+    window.onload = function() {
+      initDateInputs();
+      updateDashboardData();
+    };
+
+    // Fungsi membaca Data File CSV Secara Dinamis (Import Feature)
+    function handleCSVUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        processCSVData(text);
+      };
+      reader.readAsText(file);
+      
+      // Reset input agar file yang sama bisa diunggah lagi nanti
+      event.target.value = '';
+    }
+
+    // Pemrosesan logik CSV (Memetakan Kolom berdasarkan Nama Header)
+    function processCSVData(text) {
+      const rows = parseCSV(text);
+      if (rows.length < 2) {
+        alert("Data CSV kosong atau tidak valid.");
+        return;
+      }
+
+      // Cari baris header secara dinamis
+      let headerRowIndex = -1;
+      for (let i = 0; i < Math.min(10, rows.length); i++) {
+        const rowStr = rows[i].join(' ').toUpperCase();
+        if (rowStr.includes('NO UNIT') || rowStr.includes('TANGGAL OBSERVASI')) {
+          headerRowIndex = i;
+          break;
         }
+      }
 
-        // 7. EXCEL & PDF EXPORT SIMULATION
-        function exportDoc(format) {
-            const modal = document.getElementById('export-preview-modal');
-            const container = document.getElementById('export-meta-container');
+      if (headerRowIndex === -1) {
+        alert("Format CSV tidak dikenali. Pastikan file memiliki baris yang memuat 'NO UNIT' dan 'TANGGAL OBSERVASI'.");
+        return;
+      }
 
-            if (format === 'Excel') {
-                container.innerHTML = `
-                    <div class="border-b border-slate-200 pb-2 mb-2">
-                        <span class="text-emerald-600 font-extrabold uppercase text-[10px] tracking-widest">[EXCEL GENERATED SUCCESSFULLY]</span>
-                        <div class="text-[9px] text-slate-400 mt-1">GPE TC Department Sheet Platform</div>
-                    </div>
-                    <div class="text-[10px] space-y-1 text-slate-700">
-                        <div>| REGISTER | TRAINER | JABATAN | HOURS | STATUS WORK |</div>
-                        <div>| 81.0124.3832 | Helbin P.S | Supervisor Trainer | 120h | Closed |</div>
-                        <div>| 22.0512.436 | Regen Tolanda | Supervisor Trainer | 96h | Closed |</div>
-                        <div>| 81.0625.6203 | Hasim | Foreman Trainer | 112h | Closed |</div>
-                    </div>
-                    <div class="p-2 bg-emerald-50 border border-emerald-100 rounded text-[9px] text-emerald-700 mt-3 leading-relaxed">
-                        *File ini dikompilasi dengan Auto-Width Column, Calibri Standard, Header biru GPE, dan Formula Sum.
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="border-b border-slate-200 pb-2 mb-2">
-                        <span class="text-red-600 font-extrabold uppercase text-[10px] tracking-widest">[PDF EVALUATION GRAPH REPORT]</span>
-                        <div class="text-[9px] text-slate-400 mt-1">Dibuat pada: Sunday, May 17, 2026</div>
-                    </div>
-                    <div class="text-[10px] space-y-1 text-slate-700">
-                        <div>1. LAPORAN EVALUASI: Kinerja Instruktur Operasional GPE</div>
-                        <div>2. PRODUKTIVITAS TIM TC: 94.6% Target Pekerjaan Selesai</div>
-                        <div>3. REKAPITULASI REALISASI:</div>
-                        <div class="pl-3 text-amber-700">- Helbin P.S: 12 Laporan Terverifikasi</div>
-                        <div class="pl-3 text-amber-700">- Regen Tolanda: 10 Laporan Terverifikasi</div>
-                    </div>
-                    <div class="p-2 bg-red-50 border border-red-100 rounded text-[9px] text-red-700 mt-3 leading-relaxed">
-                        *File PDF siap diprint untuk bahan evaluasi mingguan bersama manajemen PT GPE.
-                    </div>
-                `;
-            }
+      const headers = rows[headerRowIndex].map(h => h.trim().toUpperCase().replace(/\n|\r/g, ' '));
+      
+      // Indexing posisi kolom sesuai nama header
+      const colUnit = headers.indexOf('NO UNIT');
+      const colTgl = headers.indexOf('TANGGAL OBSERVASI');
+      const colNik = headers.indexOf('NIK');
+      const colOpr = headers.indexOf('NAMA OPERATOR');
+      const colMat = headers.indexOf('JENIS MATERIAL');
+      const colHauler = headers.indexOf('JUMLAH HAULER');
+      const colCycle = headers.indexOf('CYCLE TIME');
+      const colPrim = headers.indexOf('PRIMARY TIME');
+      const colSec = headers.indexOf('SECONDARY TIME');
+      const colMcc = headers.indexOf('PTY MCC');
+      const colOprPty = headers.indexOf('PTY OPERATHINK');
+      const colMode = headers.indexOf('MODE P/P+');
+      const colFuel = headers.indexOf('FUEL');
+      const colDist = headers.indexOf('JARAK TEMPUH');
+      const colSpeed = headers.indexOf('AVR. SPEED');
+      const colScore = headers.findIndex(h => h.includes('FINAL SCORE'));
+      const colRemarks = headers.indexOf('REMARKS');
 
-            modal.classList.remove('hidden');
-            showToast(`Ekspor ${format} Sukses`, `Dokumen evaluasi siap dibagikan.`, "success");
+      const newData = [];
+      for (let i = headerRowIndex + 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (row.length < 5 || !row[colUnit] || !row[colTgl]) continue; // Skip jika baris tidak valid/kosong
+
+        // Parse tanggal ke format baku YYYY-MM-DD
+        const parsedTgl = parseIndoDate(row[colTgl].trim());
+
+        newData.push({
+          id: i,
+          nik: colNik > -1 ? row[colNik].trim() : '',
+          operator: colOpr > -1 ? row[colOpr].trim() : '',
+          unit: row[colUnit].trim(),
+          tanggal: parsedTgl,
+          material: colMat > -1 ? row[colMat].trim() : '',
+          hauler: colHauler > -1 ? parseFloat(row[colHauler].replace(',', '.')) || 0 : 0,
+          cycleTime: colCycle > -1 ? parseFloat(row[colCycle].replace(',', '.')) || 0 : 0,
+          primaryTime: colPrim > -1 ? parseFloat(row[colPrim].replace(',', '.')) || 0 : 0,
+          secondaryTime: colSec > -1 ? parseFloat(row[colSec].replace(',', '.')) || 0 : 0,
+          targetFuel: colMcc > -1 ? parseFloat(row[colMcc].replace(',', '.')) || 0 : 0,
+          actualFuel: colOprPty > -1 ? parseFloat(row[colOprPty].replace(',', '.')) || 0 : 0,
+          mode: colMode > -1 ? row[colMode].trim() : '',
+          fuel: colFuel > -1 ? parseFloat(row[colFuel].replace(',', '.')) || 0 : 0,
+          distance: colDist > -1 ? parseFloat(row[colDist].replace(',', '.')) || 0 : 0,
+          speed: colSpeed > -1 ? parseFloat(row[colSpeed].replace(',', '.')) || 0 : 0,
+          score: colScore > -1 ? parseFloat(row[colScore].replace(',', '.')) || 0 : 0,
+          remarks: colRemarks > -1 ? row[colRemarks].trim() : '-'
+        });
+      }
+
+      if (newData.length > 0) {
+        spreadsheetData = newData;
+        alert(`Sukses! Berhasil mengimpor ${newData.length} baris data observasi.`);
+        applyDefaultDateRange();
+      } else {
+        alert("Tidak ada data observasi valid yang berhasil diekstrak.");
+      }
+    }
+
+    // CSV Splitter (memisahkan kolom tanpa merusak isi kutipan ganda)
+    function parseCSV(text) {
+      const rows = [];
+      let currentRow = [];
+      let currentCell = '';
+      let insideQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i+1];
+        if (char === '"' && insideQuotes && nextChar === '"') {
+          currentCell += '"';
+          i++;
+        } else if (char === '"') {
+          insideQuotes = !insideQuotes;
+        } else if (char === ',' && !insideQuotes) {
+          currentRow.push(currentCell);
+          currentCell = '';
+        } else if ((char === '\n' || char === '\r') && !insideQuotes) {
+          if (char === '\r' && nextChar === '\n') i++;
+          currentRow.push(currentCell);
+          rows.push(currentRow);
+          currentRow = [];
+          currentCell = '';
+        } else {
+          currentCell += char;
         }
+      }
+      if (currentRow.length > 0 || currentCell !== '') {
+        currentRow.push(currentCell);
+        rows.push(currentRow);
+      }
+      return rows;
+    }
 
-        function closeExportModal() {
-            document.getElementById('export-preview-modal').classList.add('hidden');
+    // Fungsi otomatis mengatur input tanggal ke rentang penuh data
+    function initDateInputs() {
+      if (spreadsheetData.length === 0) return;
+      const dates = spreadsheetData.map(r => new Date(r.tanggal)).filter(d => !isNaN(d));
+      if (dates.length === 0) return;
+      const minDate = new Date(Math.min(...dates));
+      const maxDate = new Date(Math.max(...dates));
+      
+      const formatYYYYMMDD = (d) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      };
+
+      document.getElementById('input-start-date').value = formatYYYYMMDD(minDate);
+      document.getElementById('input-end-date').value = formatYYYYMMDD(maxDate);
+    }
+
+    // Parser Tanggal untuk Mengonversi Format "DD Bulan YYYY" ke "YYYY-MM-DD"
+    function parseIndoDate(dateStr) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+      
+      const months = ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'agu', 'sep', 'okt', 'nov', 'des'];
+      const parts = dateStr.toLowerCase().split(' ');
+      if (parts.length >= 3) {
+        let day = parts[0].padStart(2, '0');
+        let monthName = parts[1];
+        let year = parts[2];
+        let monthIdx = months.findIndex(m => monthName.startsWith(m)) + 1;
+        let month = String(monthIdx).padStart(2, '0');
+        if(monthIdx > 0 && year.length === 4) {
+          return `${year}-${month}-${day}`;
         }
-    </script>
+      }
+      return dateStr;
+    }
+
+    // Fungsi pembantu memformat Tanggal Indonesia untuk visualisasi
+    function getIndoMonth(monthIndex) {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      return months[monthIndex];
+    }
+
+    function formatIndoDateStr(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      return `${parts[2]} ${getIndoMonth(monthIndex)} ${parts[0]}`;
+    }
+
+    // Terapkan rentang tanggal kustom
+    function applyDateRange() {
+      const startInput = document.getElementById('input-start-date').value;
+      const endInput = document.getElementById('input-end-date').value;
+
+      if (!startInput || !endInput) {
+        alert("Tanggal mulai dan akhir harus diisi!");
+        return;
+      }
+
+      if (new Date(startInput) > new Date(endInput)) {
+        alert("Tanggal Mulai tidak boleh melewati Tanggal Akhir!");
+        return;
+      }
+
+      isDateApplied = true;
+      updateDashboardData();
+    }
+
+    // Mengembalikan rentang ke seluruh data spreadsheet
+    function resetToAllData() {
+      isDateApplied = true;
+      initDateInputs();
+      updateDashboardData();
+    }
+
+    // Terapkan rentang default (Semua Data)
+    function applyDefaultDateRange() {
+      isDateApplied = true;
+      initDateInputs();
+      updateDashboardData();
+    }
+
+    // Mengambil dan menghitung statistik dasbor secara real-time
+    function updateDashboardData() {
+      const blankState = document.getElementById('blank-state');
+      const mainCanvas = document.getElementById('gpe-dashboard-canvas');
+      const btnDownload = document.getElementById('btn-download');
+
+      if (!isDateApplied) {
+        blankState.classList.remove('hidden');
+        mainCanvas.classList.add('hidden');
+        btnDownload.classList.add('hidden');
+        return;
+      }
+
+      const startVal = document.getElementById('input-start-date').value;
+      const endVal = document.getElementById('input-end-date').value;
+
+      const startDate = new Date(startVal);
+      const endDate = new Date(endVal);
+      startDate.setHours(0,0,0,0);
+      endDate.setHours(0,0,0,0);
+
+      // Saring data observasi
+      const filtered = spreadsheetData.filter(row => {
+        const rowDate = new Date(row.tanggal);
+        rowDate.setHours(0,0,0,0);
+        return rowDate >= startDate && rowDate <= endDate;
+      }).sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
+      if (filtered.length === 0) {
+        blankState.classList.remove('hidden');
+        mainCanvas.classList.add('hidden');
+        btnDownload.classList.add('hidden');
+        return;
+      }
+
+      // Tampilkan dasbor dan hilangkan blank state
+      blankState.classList.add('hidden');
+      mainCanvas.classList.remove('hidden');
+      btnDownload.classList.remove('hidden');
+
+      // --- HITUNG METRIK UTAMA ---
+      const totalObs = filtered.length;
+      let sumPrimary = 0;
+      let sumSecondary = 0;
+      let sumCycle = 0;
+      let sumHauler = 0;
+      let sumTargetFuel = 0; // target productivity (PTY MCC)
+      let sumActualFuel = 0; // actual productivity (PTY OPERATHINK)
+      let sumScore = 0;
+      let sumSpeed = 0;
+      let sumDistance = 0;
+
+      filtered.forEach(row => {
+        sumPrimary += row.primaryTime;
+        sumSecondary += row.secondaryTime;
+        sumCycle += row.cycleTime;
+        sumHauler += row.hauler;
+        sumTargetFuel += row.targetFuel;
+        sumActualFuel += row.actualFuel;
+        sumScore += row.score;
+        sumSpeed += row.speed;
+        sumDistance += row.distance;
+      });
+
+      const avgPrimary = (sumPrimary / totalObs).toFixed(1);
+      const avgSecondary = (sumSecondary / totalObs).toFixed(1);
+      const avgCycle = (sumCycle / totalObs).toFixed(1);
+      const avgHauler = (sumHauler / totalObs).toFixed(1);
+      const avgTargetFuel = Math.round(sumTargetFuel / totalObs);
+      const avgActualFuel = Math.round(sumActualFuel / totalObs);
+      const avgSelisih = avgActualFuel - avgTargetFuel;
+      const avgScore = (sumScore / totalObs).toFixed(2);
+      const avgSpeed = (sumSpeed / totalObs).toFixed(1);
+      const avgDistance = (sumDistance / totalObs).toFixed(1);
+
+      // Cari skor COIP tertinggi dan terendah beserta rinciannya
+      const scores = filtered.map(r => r.score);
+      const maxScore = Math.max(...scores);
+      const minScore = Math.min(...scores);
+      const maxRow = filtered.find(r => r.score === maxScore);
+      const minRow = filtered.find(r => r.score === minScore);
+
+      // Terapkan nilai teks ke DOM
+      document.getElementById('header-period').innerText = `${formatIndoDateStr(startVal)} – ${formatIndoDateStr(endVal)}`;
+      document.getElementById('header-observasi-count').innerText = `${totalObs} OBSERVASI`;
+
+      document.getElementById('val-cycle').innerText = avgCycle;
+      document.getElementById('val-primary').innerText = `${avgPrimary}%`;
+      document.getElementById('val-secondary').innerText = `${avgSecondary}%`;
+      document.getElementById('val-hauler').innerText = avgHauler;
+
+      document.getElementById('td-avg-primary').innerText = `${avgPrimary}%`;
+      document.getElementById('td-avg-secondary').innerText = `${avgSecondary}%`;
+      document.getElementById('td-avg-cycle').innerText = `${avgCycle} Detik`;
+      document.getElementById('td-avg-hauler').innerText = `${avgHauler} Hauler`;
+      document.getElementById('td-avg-distance').innerText = `${avgDistance} Km`;
+      document.getElementById('td-avg-speed').innerText = `${avgSpeed} Km/Jam`;
+
+      // Panel 2: Analisis Produktivitas (Target vs Aktual BCM/Jam)
+      document.getElementById('val-pty-mcc').innerText = avgTargetFuel;
+      document.getElementById('val-pty-opr').innerText = avgActualFuel;
+      
+      const diffEl = document.getElementById('val-pty-diff');
+      if (avgSelisih >= 0) {
+        diffEl.innerText = `+${avgSelisih} BCM`;
+        diffEl.className = "text-xs font-black leading-none text-emerald-600";
+      } else {
+        diffEl.innerText = `${avgSelisih} BCM`;
+        diffEl.className = "text-xs font-black leading-none text-rose-600";
+      }
+
+      // Panel 3: COIP
+      document.getElementById('val-coip-avg').innerText = avgScore;
+      document.getElementById('val-coip-max').innerText = maxScore.toFixed(1);
+      document.getElementById('val-coip-max-detail').innerText = maxRow ? `${maxRow.unit} (${maxRow.operator})` : '-';
+      document.getElementById('val-coip-min').innerText = minScore.toFixed(1);
+      document.getElementById('val-coip-min-detail').innerText = minRow ? `${minRow.unit} (${minRow.operator})` : '-';
+      document.getElementById('val-coip-count').innerText = totalObs;
+
+      // Update Meter bundar / gauge stroke dashoffset
+      // Nilai penuh adalah 88 (keliling lingkaran dengan radius 14)
+      document.getElementById('gauge-cycle').setAttribute('stroke-dashoffset', 88 - Math.min(88, (avgCycle / 40) * 88));
+      document.getElementById('gauge-primary').setAttribute('stroke-dashoffset', 88 - Math.min(88, (avgPrimary / 100) * 88));
+      document.getElementById('gauge-secondary').setAttribute('stroke-dashoffset', 88 - Math.min(88, (avgSecondary / 100) * 88));
+      document.getElementById('gauge-hauler').setAttribute('stroke-dashoffset', 88 - Math.min(88, (avgHauler / 10) * 88));
+
+      // Menyesuaikan lebar wrapper untuk mengakomodasi banyaknya data
+      const optimalWidthStr = `${Math.max(1200, totalObs * 30)}px`;
+      document.getElementById('wrapper-trend-1').style.width = optimalWidthStr;
+      document.getElementById('wrapper-pty').style.width = optimalWidthStr;
+      document.getElementById('wrapper-coip').style.width = optimalWidthStr;
+
+      // --- UPDATE GRAPH 1 (TREND PARAMETER) ---
+      const trendSvg = document.getElementById('chart-trend-1');
+      trendSvg.innerHTML = '';
+      
+      const chartWidth = Math.max(1200, totalObs * 30);
+      trendSvg.setAttribute('viewBox', `0 0 ${chartWidth} 100`);
+
+      for (let i = 20; i <= 80; i += 30) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', '0'); line.setAttribute('y1', i);
+        line.setAttribute('x2', chartWidth.toString()); line.setAttribute('y2', i);
+        line.setAttribute('stroke', '#f1f5f9'); line.setAttribute('stroke-width', '1');
+        trendSvg.appendChild(line);
+      }
+
+      let pathPrimary = '';
+      let pathSecondary = '';
+      let pathCycle = '';
+
+      filtered.forEach((row, i) => {
+        const x = (i / (totalObs - 1 || 1)) * chartWidth;
+        const yPrimary = 100 - row.primaryTime;
+        const ySecondary = 100 - row.secondaryTime;
+        const yCycle = 100 - (row.cycleTime * 2);
+
+        pathPrimary += `${i === 0 ? 'M' : 'L'} ${x} ${yPrimary} `;
+        pathSecondary += `${i === 0 ? 'M' : 'L'} ${x} ${ySecondary} `;
+        pathCycle += `${i === 0 ? 'M' : 'L'} ${x} ${yCycle} `;
+
+        const circleP = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circleP.setAttribute('cx', x); circleP.setAttribute('cy', yPrimary); circleP.setAttribute('r', '2.5');
+        circleP.setAttribute('fill', '#22c55e');
+        trendSvg.appendChild(circleP);
+
+        const circleC = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circleC.setAttribute('cx', x); circleC.setAttribute('cy', yCycle); circleC.setAttribute('r', '2.5');
+        circleC.setAttribute('fill', '#4338ca');
+        trendSvg.appendChild(circleC);
+
+        if (totalObs <= 20 || i % 2 === 0) {
+          const textVal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          textVal.setAttribute('x', x - 4); textVal.setAttribute('y', yPrimary - 5);
+          textVal.setAttribute('font-size', '6'); textVal.setAttribute('font-weight', 'bold');
+          textVal.setAttribute('fill', '#047857');
+          textVal.textContent = `${row.primaryTime}%`;
+          trendSvg.appendChild(textVal);
+        }
+      });
+
+      const pPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pPathEl.setAttribute('d', pathPrimary); pPathEl.setAttribute('fill', 'none');
+      pPathEl.setAttribute('stroke', '#22c55e'); pPathEl.setAttribute('stroke-width', '2');
+      trendSvg.appendChild(pPathEl);
+
+      const sPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      sPathEl.setAttribute('d', pathSecondary); sPathEl.setAttribute('fill', 'none');
+      sPathEl.setAttribute('stroke', '#94a3b8'); sPathEl.setAttribute('stroke-width', '1.5');
+      sPathEl.setAttribute('stroke-dasharray', '3');
+      trendSvg.appendChild(sPathEl);
+
+      const cPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      cPathEl.setAttribute('d', pathCycle); cPathEl.setAttribute('fill', 'none');
+      cPathEl.setAttribute('stroke', '#4338ca'); cPathEl.setAttribute('stroke-width', '2');
+      trendSvg.appendChild(cPathEl);
+
+      const label1Container = document.getElementById('chart-trend-1-labels');
+      label1Container.innerHTML = '';
+      filtered.forEach((row, i) => {
+        const span = document.createElement('span');
+        span.innerText = row.unit.replace('GEK ', '');
+        label1Container.appendChild(span);
+      });
+
+      // --- UPDATE GRAPH 2 (BAR COMPONENT FOR BCM PRODUCTIVITY) ---
+      const ptySvg = document.getElementById('chart-pty');
+      ptySvg.innerHTML = '';
+      ptySvg.setAttribute('viewBox', `0 0 ${chartWidth} 100`);
+
+      filtered.forEach((row, i) => {
+        const spacing = chartWidth / filtered.length;
+        const x = i * spacing + (spacing / 2) - 8;
+        
+        // Penskalaan dinamis berdasarkan data maksimal agar batang tidak terpotong
+        const maxDataValue = Math.max(...filtered.map(r => Math.max(r.targetFuel, r.actualFuel, 500)));
+        const scaleFactor = 85 / maxDataValue;
+
+        const hMcc = row.targetFuel * scaleFactor;
+        const hOpr = row.actualFuel * scaleFactor;
+
+        const rMcc = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rMcc.setAttribute('x', x); rMcc.setAttribute('y', 90 - hMcc);
+        rMcc.setAttribute('width', '6'); rMcc.setAttribute('height', hMcc);
+        rMcc.setAttribute('fill', '#1e3a8a'); rMcc.setAttribute('rx', '0.5');
+        ptySvg.appendChild(rMcc);
+
+        const rOpr = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rOpr.setAttribute('x', x + 7); rOpr.setAttribute('y', 90 - hOpr);
+        rOpr.setAttribute('width', '6'); rOpr.setAttribute('height', hOpr);
+        rOpr.setAttribute('fill', '#10b981'); rOpr.setAttribute('rx', '0.5');
+        ptySvg.appendChild(rOpr);
+
+        if (totalObs <= 20 || i % 2 === 0) {
+          const tVal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          tVal.setAttribute('x', x - 2); tVal.setAttribute('y', 85 - Math.max(hMcc, hOpr));
+          tVal.setAttribute('font-size', '6'); tVal.setAttribute('font-weight', 'black');
+          tVal.setAttribute('fill', '#334155');
+          tVal.textContent = row.actualFuel;
+          ptySvg.appendChild(tVal);
+        }
+      });
+
+      const labelPtyContainer = document.getElementById('chart-pty-labels');
+      labelPtyContainer.innerHTML = '';
+      filtered.forEach(row => {
+        const span = document.createElement('span');
+        span.innerText = row.unit.replace('GEK ', '');
+        labelPtyContainer.appendChild(span);
+      });
+
+      const tableCompBody = document.getElementById('table-comparative-rows');
+      tableCompBody.innerHTML = '';
+      filtered.forEach((row, idx) => {
+        const diff = row.actualFuel - row.targetFuel;
+        const tr = document.createElement('tr');
+        tr.className = idx % 2 === 0 ? "bg-white" : "bg-slate-50/50";
+        tr.innerHTML = `
+          <td class="p-1 px-1.5 text-center text-slate-400 font-semibold">${idx + 1}</td>
+          <td class="p-1 font-bold text-slate-800">${row.unit}</td>
+          <td class="p-1 text-slate-600 font-medium">${row.operator.split(' ')[0]}</td>
+          <td class="p-1 text-center font-mono text-[9px]">${formatIndoDateStr(row.tanggal).split(' ')[0]} ${formatIndoDateStr(row.tanggal).split(' ')[1]}</td>
+          <td class="p-1 text-right text-slate-600">${row.targetFuel} BCM</td>
+          <td class="p-1 text-right font-bold text-slate-800">${row.actualFuel} BCM</td>
+          <td class="p-1 text-right font-extrabold ${diff >= 0 ? 'text-emerald-600' : 'text-rose-600'}">
+            ${diff > 0 ? `+${diff}` : diff} BCM
+          </td>
+        `;
+        tableCompBody.appendChild(tr);
+      });
+
+      // --- UPDATE GRAPH 3 (COIP LINE) ---
+      const coipSvg = document.getElementById('chart-coip');
+      coipSvg.innerHTML = '';
+      coipSvg.setAttribute('viewBox', `0 0 ${chartWidth} 100`);
+
+      let pathCoip = '';
+      filtered.forEach((row, i) => {
+        const x = (i / (totalObs - 1 || 1)) * chartWidth;
+        const y = 90 - ((row.score - 3.0) * 40);
+
+        pathCoip += `${i === 0 ? 'M' : 'L'} ${x} ${y} `;
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', x); circle.setAttribute('cy', y);
+        circle.setAttribute('r', '2.5'); circle.setAttribute('fill', '#1e3a8a');
+        coipSvg.appendChild(circle);
+
+        if (totalObs <= 20 || i % 2 === 0) {
+          const txtVal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          txtVal.setAttribute('x', x - 4); txtVal.setAttribute('y', y - 6);
+          txtVal.setAttribute('font-size', '6'); txtVal.setAttribute('font-weight', 'black');
+          txtVal.setAttribute('fill', '#1e3a8a');
+          txtVal.textContent = row.score.toFixed(1);
+          coipSvg.appendChild(txtVal);
+        }
+      });
+
+      const pCoip = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pCoip.setAttribute('d', pathCoip); pCoip.setAttribute('fill', 'none');
+      pCoip.setAttribute('stroke', '#1e3a8a'); pCoip.setAttribute('stroke-width', '1.5');
+      coipSvg.appendChild(pCoip);
+
+      const labelCoipContainer = document.getElementById('chart-coip-labels');
+      labelCoipContainer.innerHTML = '';
+      filtered.forEach(row => {
+        const span = document.createElement('span');
+        span.innerText = row.unit.replace('GEK ', '');
+        labelCoipContainer.appendChild(span);
+      });
+
+      const tableCoipBody = document.getElementById('table-coip-rows');
+      tableCoipBody.innerHTML = '';
+      filtered.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = idx % 2 === 0 ? "bg-white" : "bg-slate-50/50";
+        tr.innerHTML = `
+          <td class="p-1 px-1.5 text-slate-400 font-bold">${idx + 1}</td>
+          <td class="p-1 font-bold text-slate-700">${row.unit}</td>
+          <td class="p-1 text-slate-600">${row.operator.split(' ')[0]}</td>
+          <td class="p-1 text-center font-bold text-blue-900">${row.score.toFixed(1)}</td>
+        `;
+        tableCoipBody.appendChild(tr);
+      });
+
+      // --- UPDATE DONUT CHART DISTRIBUTION COIP ---
+      let catHigh = 0;
+      let catMid = 0;
+      let catLow = 0;
+
+      filtered.forEach(row => {
+        if (row.score >= 4.8) catHigh++;
+        else if (row.score >= 4.5) catMid++;
+        else catLow++;
+      });
+
+      const pctHigh = ((catHigh / totalObs) * 100).toFixed(1);
+      const pctMid = ((catMid / totalObs) * 100).toFixed(1);
+      const pctLow = ((catLow / totalObs) * 100).toFixed(1);
+
+      document.getElementById('dist-high').innerText = `${catHigh} Obs (${pctHigh}%)`;
+      document.getElementById('dist-mid').innerText = `${catMid} Obs (${pctMid}%)`;
+      document.getElementById('dist-low').innerText = `${catLow} Obs (${pctLow}%)`;
+      document.getElementById('donut-center-total').innerText = totalObs;
+
+      const offsetHigh = 150 - (catHigh / totalObs) * 150;
+      const offsetMid = 150 - ((catHigh + catMid) / totalObs) * 150;
+
+      document.getElementById('donut-high').setAttribute('stroke-dashoffset', offsetHigh);
+      document.getElementById('donut-mid').setAttribute('stroke-dashoffset', offsetMid);
+
+      // --- INJECT DYNAMIC INSIGHTS ---
+      const insightProdList = document.getElementById('list-insight-productivity');
+      insightProdList.innerHTML = '';
+      
+      const maxPrimaryRow = filtered.reduce((prev, current) => (prev.primaryTime > current.primaryTime) ? prev : current);
+      const minPrimaryRow = filtered.reduce((prev, current) => (prev.primaryTime < current.primaryTime) ? prev : current);
+      const fastestCycleRow = filtered.reduce((prev, current) => (prev.cycleTime < current.cycleTime) ? prev : current);
+      const slowestCycleRow = filtered.reduce((prev, current) => (prev.cycleTime > current.cycleTime) ? prev : current);
+
+      insightProdList.innerHTML += `<li>Primary Time tertinggi dicapai oleh operator <strong>${maxPrimaryRow.operator} (${maxPrimaryRow.unit} – ${maxPrimaryRow.primaryTime}%)</strong> pada ${formatIndoDateStr(maxPrimaryRow.tanggal).split(' ')[0]} ${formatIndoDateStr(maxPrimaryRow.tanggal).split(' ')[1]}.</li>`;
+      insightProdList.innerHTML += `<li>Primary Time terendah terdeteksi pada <strong>${minPrimaryRow.operator} (${minPrimaryRow.unit} – ${minPrimaryRow.primaryTime}%)</strong> akibat hambatan eksternal/kondisi front kerja yang kurang optimal.</li>`;
+      insightProdList.innerHTML += `<li>Siklus tercepat berhasil diraih oleh unit <strong>${fastestCycleRow.unit} (${fastestCycleRow.cycleTime} detik)</strong>, dan cycle time terlama pada <strong>${slowestCycleRow.unit} (${slowestCycleRow.cycleTime} detik)</strong>.</li>`;
+      insightProdList.innerHTML += `<li>Rata-rata kecepatan travel fleet adalah <strong>${avgSpeed} Km/Jam</strong> dengan rata-rata jarak tempuh <strong>${avgDistance} Km</strong>.</li>`;
+
+      const insightPtyList = document.getElementById('list-insight-pty');
+      insightPtyList.innerHTML = '';
+      
+      const maxPtyOprRow = filtered.reduce((prev, current) => (prev.actualFuel > current.actualFuel) ? prev : current);
+      const minPtyOprRow = filtered.reduce((prev, current) => (prev.actualFuel < current.actualFuel) ? prev : current);
+      const maxGainRow = filtered.reduce((prev, current) => ((prev.actualFuel - prev.targetFuel) > (current.actualFuel - current.targetFuel)) ? prev : current);
+
+      insightPtyList.innerHTML += `<li>Produktivitas aktual tertinggi dicapai oleh <strong>${maxPtyOprRow.unit} (${maxPtyOprRow.operator} – ${maxPtyOprRow.actualFuel} BCM/Jam)</strong>.</li>`;
+      insightPtyList.innerHTML += `<li>Produktivitas aktual terendah terjadi pada unit <strong>${minPtyOprRow.unit} (${minPtyOprRow.operator} – ${minPtyOprRow.actualFuel} BCM/Jam)</strong>.</li>`;
+      insightPtyList.innerHTML += `<li>Peningkatan performa aktual terhadap target terbesar dicapai oleh <strong>${maxGainRow.unit} (+${maxGainRow.actualFuel - maxGainRow.targetFuel} BCM/Jam)</strong>.</li>`;
+      insightPtyList.innerHTML += `<li>Rata-rata produktivitas aktual adalah <strong>${avgActualFuel} BCM/Jam</strong>, melampaui target rata-rata MCC sebesar <strong>${avgTargetFuel} BCM/Jam</strong>.</li>`;
+
+      const insightCoipList = document.getElementById('list-insight-coip');
+      insightCoipList.innerHTML = '';
+
+      insightCoipList.innerHTML += `<li>Rata-rata skor COIP sebesar <strong>${avgScore}</strong> menunjukkan kepatuhan taktis tim lapangan yang sangat baik.</li>`;
+      insightCoipList.innerHTML += `<li>Faktor dominan hambatan: <strong>${filtered.filter(r => r.remarks && r.remarks !== '-').length} kasus</strong> melaporkan adanya loading slip, dudukan lembek, front sempit, jenjang < 2m, material keras, dan HD amblas.</li>`;
+      insightCoipList.innerHTML += `<li>Skor COIP tertinggi dicapai oleh unit <strong>${maxRow ? maxRow.unit : '-'} (${maxScore.toFixed(1)})</strong> dan skor terendah pada unit <strong>${minRow ? minRow.unit : '-'} (${minScore.toFixed(1)})</strong>.</li>`;
+      insightCoipList.innerHTML += `<li>Rekomendasi Perbaikan: Segera lakukan perbaikan geometri Loading Point (lebar optimal min. 15m), kelola drainase area loading, serta optimalisasi kesesuaian jumlah hauler.</li>`;
+    }
+
+    // Mengambil snapshot dari dasbor canvas menggunakan html2canvas
+    function downloadDashboardImage() {
+      const element = document.getElementById('gpe-dashboard-canvas');
+      if (!element) return;
+
+      const origStyle = element.style.minWidth;
+      element.style.minWidth = "1280px"; // Kunci lebar minimum agar resolusi konsisten pas ekspor
+
+      html2canvas(element, {
+        scale: 2, // Meningkatkan kerapatan pixel gambar hasil download
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      }).then((canvas) => {
+        element.style.minWidth = origStyle; // Kembalikan ke style asli
+        
+        const link = document.createElement('a');
+        link.download = `GPE_COIP_OPERATHINK_Dashboard.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  </script>
 </body>
 </html>
